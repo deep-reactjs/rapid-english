@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "656287987720",
+    "project_id": "rapidenglish-bfe41",
+    "storage_bucket": "rapidenglish-bfe41.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656287987720:android:f432c932b1cf26a9bfb9bd",
+        "android_client_info": {
+          "package_name": "com.rapidenglish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656287987720-6rjihg01vib9fbik0nheds2bqiljr58g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiK77qI9ZfgB9rYEjAsQ_nI9VvFdDKEFE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "656287987720-4eiunnvlape0g7q7gdld6h6620vci326.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "656287987720-4vhve71qoaso4sm10rjf8opolq31r212.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rapidenglish"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-2234408096020602~5967631681"
+    }
+  ],
+  "configuration_version": "1"
+}

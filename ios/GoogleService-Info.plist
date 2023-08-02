@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>656287987720-4vhve71qoaso4sm10rjf8opolq31r212.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.656287987720-4vhve71qoaso4sm10rjf8opolq31r212</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAuq-ygvrfNRH3vWAJEbXWakA-LRlc3k94</string>
+	<key>GCM_SENDER_ID</key>
+	<string>656287987720</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.rapidenglish</string>
+	<key>PROJECT_ID</key>
+	<string>rapidenglish-bfe41</string>
+	<key>STORAGE_BUCKET</key>
+	<string>rapidenglish-bfe41.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:656287987720:ios:bdaa4da7eaf2ebc2bfb9bd</string>
+</dict>
+</plist>

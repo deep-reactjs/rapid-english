@@ -1,0 +1,66 @@
+[
+    {
+        "id": "0",
+        "name": "My Orders",
+        "icon": "history",
+        "navigation": "Order",
+        "v": false
+    },
+    {
+        "id": "1",
+        "name": "Wishlist",
+        "icon": "favorite",
+        "navigation": "Wishlist",
+        "v": false
+    },
+    {
+        "id": "2",
+        "name": "Notification",
+        "icon": "notifications",
+        "navigation": "Notification",
+        "v": false
+    },
+    {
+        "id": "3",
+        "name": "Refer & Earn",
+        "icon": "share",
+        "navigation": "Refer",
+        "v": false
+    },
+    {
+        "id": "4",
+        "name": "Privacy Policy",
+        "icon": "security",
+        "navigation": "Privacy",
+        "v": false
+    },
+    {
+        "id": "5",
+        "name": "Terms of Use",
+        "icon": "feedback",
+        "navigation": "Terms",
+        "v": false
+    },
+    {
+        "id": "6",
+        "name": "Return Policy",
+        "icon": "history",
+        "navigation": "Return",
+        "v": false
+    },
+    {
+        "id": "7",
+        "name": "Contact us",
+        "icon": "phone",
+        "navigation": "Contact",
+        "v": false
+    },
+    {
+        "id": "8",
+        "name": "About us",
+        "icon": "report",
+        "navigation": "About",
+        "v": false
+    }
+   
+]

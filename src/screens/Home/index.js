@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
+import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import {Ad, AppRoot, Header} from '../../component';
 import * as Animatable from 'react-native-animatable';
 import {
@@ -99,31 +99,31 @@ const Home = ({navigation}) => {
     console.log('[App] onRegister: ', token);
   };
 
-  useEffect(async () => {
-    var time;
-    navigation.addListener('focus', () => {
-      try {
-        const interstitial = InterstitialAd.createAd(
-          Constants.INTERSTITIAL__KEY,
-        );
-        time = setTimeout(() => {
-          interstitial.show();
-        }, 8000);
-      } catch (error) {
-        console.log('error', error);
-      }
-    });
-    navigation.addListener('blur', () => {
-      clearTimeout(time);
-    });
-    // FCMService.registerAppWithFCM();
-    // FCMService.register(onRegister, onNotification, onOpenNotification);
-    localNotificationService.configure(onOpenNotification);
-    return () => {
-      // FCMService.unRegister();
-      // localNotificationService.unregister();
-    };
-  }, []);
+  // useEffect(async () => {
+  //   var time;
+  //   navigation.addListener('focus', () => {
+  //     try {
+  //       const interstitial = InterstitialAd.createAd(
+  //         Constants.INTERSTITIAL__KEY,
+  //       );
+  //       time = setTimeout(() => {
+  //         interstitial.show();
+  //       }, 8000);
+  //     } catch (error) {
+  //       console.log('error', error);
+  //     }
+  //   });
+  //   navigation.addListener('blur', () => {
+  //     clearTimeout(time);
+  //   });
+  //   // FCMService.registerAppWithFCM();
+  //   // FCMService.register(onRegister, onNotification, onOpenNotification);
+  //   localNotificationService.configure(onOpenNotification);
+  //   return () => {
+  //     // FCMService.unRegister();
+  //     // localNotificationService.unregister();
+  //   };
+  // }, []);
   return (
     <AppRoot>
       <Header
@@ -131,7 +131,6 @@ const Home = ({navigation}) => {
         text={'Home'}
         notification={() => navigation.navigate('Notification')}
       />
-
       <ScrollView>
         <Animatable.View style={{flex: 1}} animation="pulse" duration={1000}>
           <View style={{flex: 1, padding: 10, marginTop: -Screen.hp(1)}}>
@@ -262,7 +261,72 @@ const Home = ({navigation}) => {
                 </Animatable.View>
               </TouchableNativeFeedback>
             </View>
-
+            <View style={s.box}>
+              <TouchableNativeFeedback
+                style={[s.innerbox, {marginLeft: 0}]}
+                onPress={() => {
+                  stock
+                    .pulse(500)
+                    .then(endState =>
+                      console.log(
+                        endState.finished
+                          ? navigation.navigate('Messages')
+                          : 'bounce cancelled',
+                      ),
+                    );
+                }}>
+                <Animatable.View
+                  // style={s.innerbox}
+                  animation="slideInRight"
+                  duration={1000}
+                  ref={stock}>
+                  <View style={s.box1}>
+                    {
+                      <Image
+                        style={s.img}
+                        source={ImageView.chat}
+                        resizeMode="contain"
+                      />
+                    }
+                    <View style={s.box2}>
+                      <Text style={s.boxtxt}>Personal Assistant</Text>
+                    </View>
+                  </View>
+                </Animatable.View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback
+                style={[s.innerbox, {marginLeft: 0}]}
+                onPress={() => {
+                  stock
+                    .pulse(500)
+                    .then(endState =>
+                      console.log(
+                        endState.finished
+                          ? navigation.navigate('Faq')
+                          : 'bounce cancelled',
+                      ),
+                    );
+                }}>
+                <Animatable.View
+                  // style={s.innerbox}
+                  animation="slideInRight"
+                  duration={1000}
+                  ref={stock}>
+                  <View style={s.box1}>
+                    {
+                      <Image
+                        style={s.img}
+                        source={ImageView.faq}
+                        resizeMode="contain"
+                      />
+                    }
+                    <View style={s.box2}>
+                      <Text style={s.boxtxt}>FAQ</Text>
+                    </View>
+                  </View>
+                </Animatable.View>
+              </TouchableNativeFeedback>
+            </View>
             <View style={s.box}>
               <TouchableNativeFeedback
                 style={[s.innerbox, {marginLeft: 0}]}
@@ -330,6 +394,7 @@ const Home = ({navigation}) => {
                 </Animatable.View>
               </TouchableNativeFeedback>
             </View>
+            
           </View>
         </Animatable.View>
       </ScrollView>

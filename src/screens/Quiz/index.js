@@ -1,5 +1,13 @@
-import React, { Component } from 'react';
-import { AppRoot, Separator, ProgressBar, Ad, Header, Loader, Button } from '../../component';
+import React, {Component} from 'react';
+import {
+  AppRoot,
+  Separator,
+  ProgressBar,
+  Ad,
+  Header,
+  Loader,
+  Button,
+} from '../../component';
 import c from '../../styles/commonStyle';
 import {
   Screen,
@@ -18,16 +26,23 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Vibration, Modal
+  Vibration,
+  Modal,
 } from 'react-native';
-import { connect } from 'react-redux';
-import { PrefManager } from '../../utils';
-import Sound from "react-native-sound";
+import {connect} from 'react-redux';
+import {PrefManager} from '../../utils';
+import Sound from 'react-native-sound';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import * as Animatable from 'react-native-animatable';
-import { InterstitialAd, TestIds } from '@react-native-admob/admob';
-import { quizActions, onQuizClear } from '../../redux/actions/quizActions';
-import { saveAnswerActions, saveAnswerClear } from '../../redux/actions/saveAnswerActions';
+import {InterstitialAd, TestIds} from '@react-native-admob/admob';
+import {quizActions, onQuizClear} from '../../redux/actions/quizActions';
+import {
+  saveAnswerActions,
+  saveAnswerClear,
+} from '../../redux/actions/saveAnswerActions';
+import ViewShot from 'react-native-view-shot';
+import RNFS from 'react-native-fs'
+import Share from 'react-native-share';
 const s = StyleSheet.create({
   viewRoot: {
     backgroundColor: Colors.shadow,
@@ -56,7 +71,7 @@ const s = StyleSheet.create({
   qoutl: {
     height: 18,
     width: 18,
-    transform: [{ rotate: '180deg' }],
+    transform: [{rotate: '180deg'}],
     position: 'absolute',
     top: 14,
     left: 14,
@@ -64,13 +79,13 @@ const s = StyleSheet.create({
   qoutr: {
     height: 18,
     width: 18,
-    transform: [{ rotate: '0deg' }],
+    transform: [{rotate: '0deg'}],
     position: 'absolute',
     bottom: 14,
     right: 14,
   },
 });
-Sound.setCategory("Playback");
+Sound.setCategory('Playback');
 function convertTime(sec) {
   var hours = Math.floor(sec / 3600);
   hours >= 1 ? (sec = sec - hours * 3600) : (hours = '00');
@@ -96,17 +111,17 @@ class Quiz extends Component {
       total_right: 0,
       timer: 90,
       attemp: false,
-      InterstitialAd: InterstitialAd.createAd(Constants.INTERSTITIAL__KEY)
+      InterstitialAd: InterstitialAd.createAd(Constants.INTERSTITIAL__KEY),
     };
     props.navigation.addListener('focus', async () => {
-      this.setState({ flag: false })
+      this.setState({flag: false});
       PrefManager.getValue(Storage_Key.id).then(id => {
-        props.quizActions({ id: id });
+        props.quizActions({id: id});
       });
-      this.CounterInterval()
+      this.CounterInterval();
     });
     this.isAnimation = null;
-    this.explosion = null
+    this.explosion = null;
     props.navigation.addListener('blur', async () => {
       this.setState({
         currentIndex: 0,
@@ -114,14 +129,13 @@ class Quiz extends Component {
         flag: false,
         total_attempt: 0,
         total_right: 0,
-        attemp: false
-      })
+        attemp: false,
+      });
       clearInterval(this.interval);
-    })
+    });
   }
 
   componentDidMount() {
-
     Screen.OrientationChange(this);
   }
 
@@ -129,28 +143,33 @@ class Quiz extends Component {
     Screen.OrientationListener();
   }
 
-  playBeep = (string) => {
-    var beep = new Sound(string, Sound.MAIN_BUNDLE, (error) => {
+  playBeep = string => {
+    var beep = new Sound(string, Sound.MAIN_BUNDLE, error => {
       if (error) {
-        console.log("failed to load the sound", error);
+        console.log('failed to load the sound', error);
         return;
       }
-      beep.play(async (success) => {
+      beep.play(async success => {
         console.log('success');
       });
     });
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.saveAnswer && props.saveAnswer.data && props.saveAnswer.status && !state.flag) {
+    if (
+      props.saveAnswer &&
+      props.saveAnswer.data &&
+      props.saveAnswer.status &&
+      !state.flag
+    ) {
       setTimeout(() => {
-        props.saveAnswerClear()
-        var beep = new Sound(Strings.score, Sound.MAIN_BUNDLE, (error) => {
+        props.saveAnswerClear();
+        var beep = new Sound(Strings.score, Sound.MAIN_BUNDLE, error => {
           if (error) {
-            console.log("failed to load the sound", error);
+            console.log('failed to load the sound', error);
             return;
           }
-          beep.play(async (success) => {
+          beep.play(async success => {
             console.log('success');
           });
         });
@@ -162,81 +181,124 @@ class Quiz extends Component {
         currentIndex: 0,
         active: '',
         total_attempt: props.saveAnswer.data.total_attempt,
-        total_right: props.saveAnswer.data.total_right
+        total_right: props.saveAnswer.data.total_right,
       };
     }
-
   }
 
   CounterInterval = () => {
-
-    this.interval = setInterval(
-      () => {
-        if (this.props.quizData.data && this.props.quizData.message == "Quiz attempt has already been submitted") {
-          clearInterval(this.interval);
-          this.setState({ attemp: true })
-          console.log('io', this.state.attemp);
-        }
-        else {
-          this.setState(
-            {
-              timer: this.state.timer - 1, attemp: false
-            },
-            () => {
-              if (this.state.timer === 0) {
-                clearInterval(this.interval);
-                let obj = {
-                  que_id: this.props.quizData.data[this.state.currentIndex].id,
-                  answer: '',
-                  right_wrong: this.props.quizData.data[this.state.currentIndex].right
-                }
-                this.setState({
+    this.interval = setInterval(() => {
+      if (
+        this.props.quizData.data &&
+        this.props.quizData.message == 'Quiz attempt has already been submitted'
+      ) {
+        clearInterval(this.interval);
+        this.setState({attemp: true});
+        console.log('io', this.state.attemp);
+      } else {
+        this.setState(
+          {
+            timer: this.state.timer - 1,
+            attemp: false,
+          },
+          () => {
+            if (this.state.timer === 0) {
+              clearInterval(this.interval);
+              let obj = {
+                que_id: this.props.quizData.data[this.state.currentIndex].id,
+                answer: '',
+                right_wrong:
+                  this.props.quizData.data[this.state.currentIndex].right,
+              };
+              this.setState(
+                {
                   timer: 30,
-                  active: this.props.quizData.data[this.state.currentIndex].right
-                }, () => {
-                  if (this.state.active != "") {
-                    this.state.userdata.push(obj)
+                  active:
+                    this.props.quizData.data[this.state.currentIndex].right,
+                },
+                () => {
+                  if (this.state.active != '') {
+                    this.state.userdata.push(obj);
                   }
                   setTimeout(() => {
-                    if (this.state.currentIndex + 1 == this.props.quizData.data.length) {
-                      this.save()
+                    if (
+                      this.state.currentIndex + 1 ==
+                      this.props.quizData.data.length
+                    ) {
+                      this.save();
                     } else {
                       try {
                         this.isAnimation.slideInRight(800);
-                      } catch (error) {
-                      }
-                      this.setState({ currentIndex: this.state.currentIndex + 1, active: '', progress: this.state.progress + 10, });
+                      } catch (error) {}
+                      this.setState({
+                        currentIndex: this.state.currentIndex + 1,
+                        active: '',
+                        progress: this.state.progress + 10,
+                      });
                       this.CounterInterval();
                     }
                   }, 1000);
                 },
-                );
-              }
-            },
-          )
-        }
-      },
-      1000,
-    );
+              );
+            }
+          },
+        );
+      }
+    }, 1000);
   };
 
   save = () => {
-    this.setState({ active: '' })
+    this.setState({active: ''});
     PrefManager.getValue(Storage_Key.id).then(id => {
       this.props.saveAnswerActions({
         id: id,
-        userdata: this.state.userdata
-      })
-    })
-  }
-  goBack = () =>{
-    this.state.InterstitialAd.show()
-    this.props.navigation.goBack()
-  }
-
+        userdata: this.state.userdata,
+      });
+    });
+  };
+  goBack = () => {
+    this.state.InterstitialAd.show();
+    this.props.navigation.goBack();
+  };
+  captureAndShareScreenshot = () => {
+    this.setState({captureLoading: true})
+    this.refs.viewShot.capture().then(uri => {
+      RNFS.readFile(uri, 'base64').then(res => {
+        let urlString = 'data:image/jpeg;base64,' + res;
+        let options = {
+          title: 'Share quiz result',
+          message: 'This is my quiz result from rapid english quiz. https://www.rapidenglish.com/',
+          url: urlString,
+          type: 'image/jpeg',
+        };
+        Share.open(options)
+          .then(res => {
+            this.setState({captureLoading: false})
+            console.log(res);
+          })
+          .catch(err => {
+            this.setState({captureLoading: false})
+            err && console.log(err);
+          });
+          this.setState({captureLoading: false})
+      });
+    });
+  };
   render() {
-    const { navigation, quizData, loading, loading1 } = this.props;
-    const { progress, quizComplete, active, timer, currentIndex, labelData, total_attempt, total_right, answer, attemp } = this.state;
+    const {navigation, quizData, loading, loading1} = this.props;
+    const {
+      progress,
+      quizComplete,
+      active,
+      timer,
+      currentIndex,
+      labelData,
+      total_attempt,
+      total_right,
+      answer,
+      attemp,
+      captureLoading
+    } = this.state;
     return (
       <AppRoot>
         <Header
@@ -256,7 +318,7 @@ class Quiz extends Component {
             }}
             visible={quizComplete}
             position="bottom"
-            animationType='fade'
+            animationType="fade"
             backdrop={true}
             coverScreen={true}
             backdropPressToClose={false}
@@ -264,53 +326,139 @@ class Quiz extends Component {
             transparent={true}
             swipeToClose={false}>
             <AppRoot>
+              <ViewShot
+                style={{flex: 1}}
+                ref="viewShot"
+                options={{format: 'jpg', quality: 0.9}}>
+              
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: Colors.secondary,
+                  }}>
+                  {!this.state.captureLoading && <TouchableOpacity
+                    onPress={() => {
+                      try {
+                        this.state.InterstitialAd.show();
+                      } catch (error) {
+                        console.log('error', error);
+                      }
+                      this.setState({quizComplete: false});
+                      navigation.navigate('Home');
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: 36,
+                      right: Screen.wp(13),
+                    }}>
+                    <Image
+                      source={ImageView.close}
+                      style={{height: 20, width: 20, tintColor: Colors.white}}
+                    />
+                  </TouchableOpacity>}
+                  <View
+                    style={{
+                      width: Screen.wp(80),
+                      height: Screen.hp(50),
+                      alignSelf: 'center',
+                      backgroundColor: Colors.white,
+                      elevation: 5,
+                      borderRadius: Screen.wp(8),
+                    }}>
+                    <Image
+                      source={ImageView.trophy}
+                      style={{
+                        height: 66,
+                        width: 66,
+                        alignSelf: 'center',
+                        margin: Screen.wp(6),
+                        marginTop: Screen.wp(12),
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: Fonts.Bold,
+                        textAlign: 'center',
+                        fontSize: Dimens.F40,
+                        color: Colors.green,
+                      }}>
+                      {total_attempt == total_right ? 'Perfect ' : ' '} Score
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.SemiBold,
+                        textAlign: 'center',
+                        fontSize: Dimens.F30,
+                        color: Colors.black,
+                      }}>
+                      {total_right + '/' + total_attempt}
+                    </Text>
 
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.secondary }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    try {
-                      this.state.InterstitialAd.show()
-                    } catch (error) {
-                      console.log('error', error);
-                    }
-                    this.setState({ quizComplete: false })
-                    navigation.navigate('Home')
-                  }}
-                  style={{ position: 'absolute', top: 36, right: Screen.wp(13) }}>
-                  <Image source={ImageView.close} style={{ height: 20, width: 20, tintColor: Colors.white }} />
-                </TouchableOpacity>
-                <View style={{ width: Screen.wp(80), height: Screen.hp(50), alignSelf: 'center', backgroundColor: Colors.white, elevation: 5, borderRadius: Screen.wp(8) }}>
-                  <Image source={ImageView.trophy} style={{ height: 66, width: 66, alignSelf: 'center', margin: Screen.wp(6), marginTop: Screen.wp(12) }} />
-                  <Text style={{ fontFamily: Fonts.Bold, textAlign: 'center', fontSize: Dimens.F40, color: Colors.green }}>{total_attempt == total_right ? "Perfect " : " "} Score</Text>
-                  <Text style={{ fontFamily: Fonts.SemiBold, textAlign: 'center', fontSize: Dimens.F30, color: Colors.black }}>{total_right + "/" + total_attempt}</Text>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.Regular,
+                        textAlign: 'center',
+                        fontSize: Dimens.F16,
+                        paddingHorizontal: Screen.wp(3.5),
+                      }}>
+                      You have answered
+                      <Text
+                        style={{
+                          fontFamily: Fonts.SemiBold,
+                          textAlign: 'center',
+                          fontSize: Dimens.F18,
+                          color: Colors.yellow,
+                        }}>
+                        {' ' + total_right + ' '}
+                      </Text>
+                      out
+                      <Text
+                        style={{
+                          fontFamily: Fonts.SemiBold,
+                          textAlign: 'center',
+                          fontSize: Dimens.F18,
+                          color: Colors.green,
+                        }}>
+                        {' ' + total_attempt + ' '}
+                      </Text>
+                      questions correctly.
+                    </Text>
 
-
-                  <Text style={{ fontFamily: Fonts.Regular, textAlign: 'center', fontSize: Dimens.F16, paddingHorizontal: Screen.wp(3.5) }}>
-                    You have answered
-                    <Text style={{ fontFamily: Fonts.SemiBold, textAlign: 'center', fontSize: Dimens.F18, color: Colors.yellow }}>{" " + total_right + ' '}</Text>
-                    out
-                    <Text style={{ fontFamily: Fonts.SemiBold, textAlign: 'center', fontSize: Dimens.F18, color: Colors.green }}>{" " + total_attempt + ' '}</Text>
-                    questions correctly.
-                  </Text>
-
-                  <Text style={{ fontFamily: Fonts.Bold, textAlign: 'center', fontSize: Dimens.F18, color: Colors.black, paddingHorizontal: Screen.wp(2), marginTop: 10 }}>Success! You have completed the quiz!</Text>
-
-                
+                    <Text
+                      style={{
+                        fontFamily: Fonts.Bold,
+                        textAlign: 'center',
+                        fontSize: Dimens.F18,
+                        color: Colors.black,
+                        paddingHorizontal: Screen.wp(2),
+                        marginTop: 10,
+                      }}>
+                      Success! You have completed the quiz!
+                    </Text>
+                  </View>
+                  {total_attempt == total_right ? (
+                    <ConfettiCannon
+                      count={200}
+                      origin={{x: -10, y: 0}}
+                      autoStart={quizComplete}
+                    />
+                  ) : null}
                 </View>
-                {total_attempt == total_right ?
-                  <ConfettiCannon
-                    count={200}
-                    origin={{ x: -10, y: 0 }}
-                    autoStart={quizComplete}
+              </ViewShot>
+              <View>
+                  <Button
+                  visible={this.state.captureLoading}
+                    // style={{paddingVertical}}
+                    text="Share"
+                    onPress={this.captureAndShareScreenshot}
                   />
-                  : null
-                }
-              </View>
+                </View>
             </AppRoot>
           </Modal>
         ) : (
           <>
-
             {quizData.data && quizData.data.length > 0 ? (
               <ScrollView>
                 <View style={s.viewRoot}>
@@ -330,8 +478,7 @@ class Quiz extends Component {
                     />
                   </View>
                 </View>
-                {
-                  !attemp &&
+                {!attemp && (
                   <>
                     <ProgressBar progress={progress} />
                     <View
@@ -343,22 +490,23 @@ class Quiz extends Component {
                           marginBottom: Screen.hp(2),
                         },
                       ]}>
-                      <Text style={c.textNormal}>{`Q${currentIndex + 1} of ${quizData.data.length
-                        }`}</Text>
+                      <Text style={c.textNormal}>{`Q${currentIndex + 1} of ${
+                        quizData.data.length
+                      }`}</Text>
                       <Text style={c.textNormal}>
                         {convertTime(timer)}
                         <Text style={c.textLight}>{' left'}</Text>
                       </Text>
                     </View>
                   </>
-                }
+                )}
 
                 <Animatable.View ref={ref => (this.isAnimation = ref)}>
                   {quizData.data &&
                     quizData.data[currentIndex].option.map((data, index) => {
                       return (
                         <Animatable.View
-                          style={{ flex: 1 }}
+                          style={{flex: 1}}
                           animation="pulse"
                           ref={ref => (data = ref)}
                           duration={1000}>
@@ -370,53 +518,73 @@ class Quiz extends Component {
                               active
                                 ? null
                                 : () => {
-                                  if (index != quizData.data[currentIndex].right) {
-                                    console.log(index, quizData.data[currentIndex].right);
-                                    Vibration.vibrate();
-                                    this.playBeep(Strings.wrong)
-                                    data.shake(800).then(endState =>
+                                    if (
+                                      index != quizData.data[currentIndex].right
+                                    ) {
                                       console.log(
-                                        endState.finished
-                                          ? 'bounce finished'
-                                          : 'bounce cancelled',
-                                      ),
-                                    );
-                                  } else {
-                                    this.playBeep(Strings.correct)
-                                  }
+                                        index,
+                                        quizData.data[currentIndex].right,
+                                      );
+                                      Vibration.vibrate();
+                                      this.playBeep(Strings.wrong);
+                                      data
+                                        .shake(800)
+                                        .then(endState =>
+                                          console.log(
+                                            endState.finished
+                                              ? 'bounce finished'
+                                              : 'bounce cancelled',
+                                          ),
+                                        );
+                                    } else {
+                                      this.playBeep(Strings.correct);
+                                    }
 
-                                  clearInterval(this.interval);
-                                  let obj = {
-                                    que_id: quizData.data[currentIndex].id,
-                                    answer: index,
-                                    right_wrong: quizData.data[currentIndex].right == index ? 1 : 2
+                                    clearInterval(this.interval);
+                                    let obj = {
+                                      que_id: quizData.data[currentIndex].id,
+                                      answer: index,
+                                      right_wrong:
+                                        quizData.data[currentIndex].right ==
+                                        index
+                                          ? 1
+                                          : 2,
+                                    };
+                                    this.setState(
+                                      {
+                                        answer: index,
+                                        active:
+                                          quizData.data[currentIndex].right,
+                                        timer: 30,
+                                      },
+                                      () => {
+                                        this.state.userdata.push(obj);
+                                        setTimeout(() => {
+                                          if (
+                                            this.state.currentIndex + 1 ==
+                                            this.props.quizData.data.length
+                                          ) {
+                                            this.save();
+                                          } else {
+                                            try {
+                                              this.isAnimation.slideInRight(
+                                                800,
+                                              );
+                                            } catch (error) {}
+                                            this.setState({
+                                              active: '',
+                                              answer: '',
+                                              progress:
+                                                this.state.progress + 10,
+                                              currentIndex:
+                                                this.state.currentIndex + 1,
+                                            });
+                                            this.CounterInterval();
+                                          }
+                                        }, 1000);
+                                      },
+                                    );
                                   }
-                                  this.setState({
-                                    answer: index,
-                                    active: quizData.data[currentIndex].right,
-                                    timer: 30,
-                                  }, () => {
-                                    this.state.userdata.push(obj)
-                                    setTimeout(() => {
-                                      if (this.state.currentIndex + 1 == this.props.quizData.data.length) {
-                                        this.save()
-                                      } else {
-                                        try {
-                                          this.isAnimation.slideInRight(800);
-                                        } catch (error) {
-                                        }
-                                        this.setState({
-                                          active: '',
-                                          answer: '',
-                                          progress: this.state.progress + 10,
-                                          currentIndex: this.state.currentIndex + 1,
-                                        });
-                                        this.CounterInterval();
-                                      }
-                                    }, 1000);
-                                  },
-                                  );
-                                }
                             }>
                             <Animatable.View
                               animation="slideInRight"
@@ -425,25 +593,29 @@ class Quiz extends Component {
                               style={[
                                 c.McqButton,
                                 {
-                                  backgroundColor:
-                                    attemp ?
-                                      index == quizData.data[currentIndex].right ? Colors.green :
-                                        quizData.data[currentIndex].answer_is == index ? Colors.red : Colors.white
-                                      :
-                                      active
-                                        ? active == index
-                                          ? Colors.green
-                                          : answer == index ? Colors.red : Colors.white
-                                        : Colors.white
+                                  backgroundColor: attemp
+                                    ? index == quizData.data[currentIndex].right
+                                      ? Colors.green
+                                      : quizData.data[currentIndex].answer_is ==
+                                        index
+                                      ? Colors.red
+                                      : Colors.white
+                                    : active
+                                    ? active == index
+                                      ? Colors.green
+                                      : answer == index
+                                      ? Colors.red
+                                      : Colors.white
+                                    : Colors.white,
                                 },
                               ]}>
                               <View
                                 style={[
                                   c.circleStyle,
-                                  { backgroundColor: Colors.yellow },
+                                  {backgroundColor: Colors.yellow},
                                 ]}>
                                 <Text
-                                  style={[c.textNormal, { color: Colors.white }]}>
+                                  style={[c.textNormal, {color: Colors.white}]}>
                                   {labelData[index]}
                                 </Text>
                               </View>
@@ -453,17 +625,22 @@ class Quiz extends Component {
                                   {
                                     // color: Colors.secondary,
                                     marginLeft: 8,
-                                    flex: 0.70,
-                                    color:
-                                      attemp ?
-                                        index == quizData.data[currentIndex].right ? Colors.white :
-                                          quizData.data[currentIndex].answer_is == index ? Colors.white : Colors.secondary
-                                        :
-                                        active
-                                          ? active == index
-                                            ? Colors.white
-                                            : answer == index ? Colors.white : Colors.secondary
-                                          : Colors.secondary,
+                                    flex: 0.7,
+                                    color: attemp
+                                      ? index ==
+                                        quizData.data[currentIndex].right
+                                        ? Colors.white
+                                        : quizData.data[currentIndex]
+                                            .answer_is == index
+                                        ? Colors.white
+                                        : Colors.secondary
+                                      : active
+                                      ? active == index
+                                        ? Colors.white
+                                        : answer == index
+                                        ? Colors.white
+                                        : Colors.secondary
+                                      : Colors.secondary,
                                   },
                                 ]}>
                                 {data}
@@ -474,27 +651,47 @@ class Quiz extends Component {
                       );
                     })}
                 </Animatable.View>
-                {
-                  attemp &&
+                {attemp && (
                   <Button
-                    text={this.state.currentIndex + 1 == this.props.quizData.data.length ? 'Finish' : 'Next'}
-                    containerStyle={[c.Button, { marginBottom: Screen.hp(2.5) }]}
-                    rightImg={this.state.currentIndex + 1 == this.props.quizData.data.length ? undefined : ImageView.erro}
+                    text={
+                      this.state.currentIndex + 1 ==
+                      this.props.quizData.data.length
+                        ? 'Finish'
+                        : 'Next'
+                    }
+                    containerStyle={[c.Button, {marginBottom: Screen.hp(2.5)}]}
+                    rightImg={
+                      this.state.currentIndex + 1 ==
+                      this.props.quizData.data.length
+                        ? undefined
+                        : ImageView.erro
+                    }
                     onPress={() => {
-                      if (this.state.currentIndex + 1 == this.props.quizData.data.length) {
-                        navigation.goBack()
+                      if (
+                        this.state.currentIndex + 1 ==
+                        this.props.quizData.data.length
+                      ) {
+                        navigation.goBack();
                       } else {
                         this.setState({
-                          currentIndex: this.state.currentIndex + 1
-                        })
+                          currentIndex: this.state.currentIndex + 1,
+                        });
                       }
                     }}
                   />
-                }
+                )}
               </ScrollView>
             ) : (
               <>
-                {loading ? null : <Separator text={quizData && quizData.message ? quizData.message : Strings.noq} />}
+                {loading ? null : (
+                  <Separator
+                    text={
+                      quizData && quizData.message
+                        ? quizData.message
+                        : Strings.noq
+                    }
+                  />
+                )}
               </>
             )}
           </>
@@ -521,7 +718,6 @@ class Quiz extends Component {
           </View>
           </View>
         </Modal> */}
-
       </AppRoot>
     );
   }

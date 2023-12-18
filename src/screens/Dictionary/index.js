@@ -57,7 +57,7 @@ class Dictionary extends Component {
         const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY);
         this.time = setTimeout(() => {
           interstitial.show()
-        }, 10000);
+        }, 60000);
       } catch (error) {
         console.log('error', error);
       }

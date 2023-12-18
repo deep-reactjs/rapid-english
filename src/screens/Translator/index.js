@@ -23,6 +23,8 @@ import {
 import { Google } from '../../utils/HttpService';
 import { connect } from 'react-redux';
 import { InterstitialAd, TestIds } from '@react-native-admob/admob';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Clipboard from '@react-native-community/clipboard';
 const s = StyleSheet.create({
   picker: {
     width: '80%'
@@ -55,12 +57,19 @@ const s = StyleSheet.create({
     height: 12,
     width: 12,
     tintColor: Colors.dark_gray,
-  }
+  },
+  copyContent: {
+    alignSelf: 'flex-end',
+    padding: 4,
+    borderRadius: 100,
+    paddingHorizontal: Screen.wp(3.5),
+  },
 });
 class Translator extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      copied: false,
       showPicker1: false,
       showPicker2: false,
       languageFrom: 'hi',
@@ -75,7 +84,7 @@ class Translator extends Component {
         const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY);
         this.time = setTimeout(() => {
           interstitial.show()
-        }, 10000);
+        }, 60000);
 
       } catch (error) {
         console.log('error', error);
@@ -143,6 +152,14 @@ class Translator extends Component {
       Keyboard.dismiss();
     }
   }
+  copyToClipboard = content => {
+    Clipboard.setString(content);
+    this.setState({copied: true})
+    setTimeout(() => {
+      this.setState({copied: false})
+      clearTimeout()
+    }, 2000)
+  };
   render() {
     const { navigation } = this.props;
     const { languageFrom, languageTo, inputText, showPicker1, showPicker2 } = this.state;
@@ -191,7 +208,7 @@ class Translator extends Component {
           <>
             {languageFrom ? (
               languageFrom != 'auto' ? (
-                <View style={{ backgroundColor: 'white' }}>
+                <View style={{ backgroundColor: 'white', flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                   <Text
                     style={[
                       c.textNormal,
@@ -203,6 +220,19 @@ class Translator extends Component {
                     ]}>
                     {Languages[languageFrom]}
                   </Text>
+                  {!!this.state.outputText && <TouchableOpacity
+                      style={s.copyContent}
+                      disabled={this.state.copied}
+                      onPress={() => {
+                        this.copyToClipboard(this.state.outputText);
+                      }}
+                      >
+                      <Icon
+                        name={this.state.copied ? "check-circle-outline" : "content-copy"}
+                        size={20}
+                        color={this.state.copied ? Colors.green : Colors.black}
+                      />
+                    </TouchableOpacity>}
                 </View>
               ) : null
             ) : null}

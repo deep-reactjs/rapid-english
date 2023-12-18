@@ -6,13 +6,15 @@ import Pdf from 'react-native-pdf';
 import RNFetchBlob from 'rn-fetch-blob';
 // var RNFetchBlob;
 // https://stackoverflow.com/questions/44546199/how-to-download-a-file-with-react-native
-import { Screen, Fonts, Dimens } from "../../config/appConstants";
+import { Screen, Fonts, Dimens, Constants } from "../../config/appConstants";
+import { InterstitialAd } from '@react-native-admob/admob';
 class BlogView extends Component {
     constructor(props) {
         super(props);
         this.state = {
             pdf: '',
-            loading: true
+            loading: true,
+            InterstitialAd: InterstitialAd.createAd(Constants.INTERSTITIAL__KEY),
         }
         props.navigation.addListener('focus', async () => {
             if (Platform.OS === 'ios') {
@@ -70,10 +72,13 @@ class BlogView extends Component {
         Screen.OrientationChange(this);
     }
 
-    componentWillUnmount() {
-        Screen.OrientationListener();
-    }
-
+    // componentWillUnmount() {
+    //     Screen.OrientationListener();
+    // }
+    goBack = () => {
+     this.state.InterstitialAd.show();
+        this.props.navigation.goBack();
+      };
     render() {
         const { navigation } = this.props;
         const { loading, pdf } = this.state;
@@ -84,7 +89,7 @@ class BlogView extends Component {
                 <View style={c.flexStyle}>
                     <Header
                         text={data.name}
-                        onBack={() => navigation.goBack()}
+                        onBack={() => this.goBack()}
                     />
                     {pdf ?
                         <Pdf

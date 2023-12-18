@@ -1,13 +1,20 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import c from '../../styles/commonStyle';
-import { Home } from '../../navigation/NavigationHelper';
-import { View, StyleSheet, Image, TouchableOpacity, Text, Platform } from 'react-native';
+import {Home} from '../../navigation/NavigationHelper';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Text,
+  Platform,
+} from 'react-native';
 import {
   AppRoot,
   TextInput,
   Button,
   ScrollableAvoidKeyboard,
-  Snackbar
+  Snackbar,
 } from '../../component';
 import {
   Strings,
@@ -19,16 +26,15 @@ import {
   Storage_Key,
   Constants,
 } from '../../config/appConstants';
-import { Helper, HttpService, PrefManager } from '../../utils';
-import { Facebook } from '../../utils/HttpService';
-import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk';
+import {Helper, HttpService, PrefManager} from '../../utils';
+import {Facebook} from '../../utils/HttpService';
+import FBSDK, {LoginManager, AccessToken} from 'react-native-fbsdk';
 // import { GoogleSignin } from '@react-native-community/google-signin';
-import {
-  GoogleSignin
-} from '@react-native-google-signin/google-signin';
-import { connect } from 'react-redux';
-import { signIn, SignInClear } from '../../redux/actions/authActions';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {connect} from 'react-redux';
+import {signIn, SignInClear} from '../../redux/actions/authActions';
 import messaging from '@react-native-firebase/messaging';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const s = StyleSheet.create({
   logoStyle: {
     height: Screen.hp(26),
@@ -55,24 +61,27 @@ class Signin extends Component {
       emailError: '',
       passError: '',
       flag: false,
-      app:1,
-      app1:1
+      app: 1,
+      app1: 1,
     };
     this.isUsername = React.createRef();
     this.isPassword = React.createRef();
-    PrefManager.getValue(Storage_Key.app).then(a=>{
-      PrefManager.getValue(Storage_Key.app1).then(a1=>{
-      if(a){
-        this.setState({app:a,app1:a1})
-      }
-    })
-  })
+    PrefManager.getValue(Storage_Key.app).then(a => {
+      PrefManager.getValue(Storage_Key.app1).then(a1 => {
+        if (a) {
+          this.setState({app: a, app1: a1});
+        }
+      });
+    });
   }
 
   async componentDidMount() {
     Screen.OrientationChange(this);
-   await GoogleSignin.configure({
-      webClientId: Platform.OS == 'android' ? Constants.GOOGLE_SIGNIN_KEY_ANDROID : Constants.GOOGLE_SIGNIN_KEY_IOS,
+    await GoogleSignin.configure({
+      webClientId:
+        Platform.OS == 'android'
+          ? Constants.GOOGLE_SIGNIN_KEY_ANDROID
+          : Constants.GOOGLE_SIGNIN_KEY_IOS,
       // scopes: ["https://www.googleapis.com/auth/userinfo.profile"], // what API you want to access on behalf of the user, default is email and profile
       // client_type: 3, // client ID of type WEB for your server (needed to verify user ID and offline access)
       // offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
@@ -121,8 +130,7 @@ class Signin extends Component {
     fetch(Facebook + token)
       .then(response => response.json())
       .then(json => {
-
-        this.socialLogin(json, 1)
+        this.socialLogin(json, 1);
       })
       .catch(e => {
         console.log(e);
@@ -134,38 +142,37 @@ class Signin extends Component {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log('userInfo', userInfo);
-      this.socialLogin(userInfo.user, 2)
+      this.socialLogin(userInfo.user, 2);
     } catch (error) {
       console.log('Test', error);
     }
   };
 
   componentDidUpdate(prevProps) {
-    const { data, loading, navigation, SignInClear } = this.props;
+    const {data, loading, navigation, SignInClear} = this.props;
     if (Object.keys(data).length !== 0 && data.status && !loading) {
-      PrefManager.setValue(Storage_Key.name, data.data.name)
-      PrefManager.setValue(Storage_Key.id, data.data.id)
-      PrefManager.setValue(Storage_Key.phone, data.data.mobile)
-      PrefManager.setValue(Storage_Key.email, data.data.email)
-      PrefManager.setValue(Storage_Key.profile, data.data.profile)
+      PrefManager.setValue(Storage_Key.name, data.data.name);
+      PrefManager.setValue(Storage_Key.id, data.data.id);
+      PrefManager.setValue(Storage_Key.phone, data.data.mobile);
+      PrefManager.setValue(Storage_Key.email, data.data.email);
+      PrefManager.setValue(Storage_Key.profile, data.data.profile);
       navigation.dispatch(Home);
 
       // console.log('data', data.data);
     }
     if (Object.keys(data).length !== 0 && !data.status && !loading) {
-      SignInClear()
+      SignInClear();
     }
   }
 
-
   render() {
-    const { navigation, loading } = this.props;
-    const { email, password, emailError, passError } = this.state;
+    const {navigation, loading} = this.props;
+    const {email, password, emailError, passError} = this.state;
     return (
       <AppRoot>
-        <View style={{ flex: 1, backgroundColor: Colors.white }}>
+        <View style={{flex: 1, backgroundColor: Colors.white}}>
           <ScrollableAvoidKeyboard
-            style={{ flex: 1 }}
+            style={{flex: 1}}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'handled'}>
             <Image
@@ -179,7 +186,7 @@ class Signin extends Component {
               title={Strings.email}
               placeholderTextColor={Colors.dark_gray}
               onChangeText={text =>
-                this.setState({ email: text, emailError: '' })
+                this.setState({email: text, emailError: ''})
               }
               keyboardType={'email-address'}
               placeholder={Strings.email}
@@ -201,11 +208,11 @@ class Signin extends Component {
               errorText={passError}
               placeholderTextColor={Colors.dark_gray}
               onChangeText={text =>
-                this.setState({ password: text, passError: '' })
+                this.setState({password: text, passError: ''})
               }
               keyboardType={'default'}
               placeholder={Strings.password}
-              containerStyle={[c.loginInput, { marginTop: Screen.hp(2) }]}
+              containerStyle={[c.loginInput, {marginTop: Screen.hp(2)}]}
               textinputStyle={c.logininputStyle}
               iconName={'lock'}
               ref={input => {
@@ -225,37 +232,83 @@ class Signin extends Component {
             <Button
               text={Strings.Signin}
               visible={loading}
-              containerStyle={[c.Button, { marginBottom: Screen.hp(2) }]}
+              containerStyle={[c.Button, {marginBottom: Screen.hp(2)}]}
               onPress={() => this.login()}
             />
 
-            <Text style={[c.textBold, { alignSelf: 'center' }]}>{'or'}</Text>
-            {(Platform.OS == 'ios' ? this.state.app1 == 0 : this.state.app != 0)?  
+            <Text style={[c.textBold, {alignSelf: 'center'}]}>{'or'}</Text>
+            {(
+              Platform.OS == 'ios' ? this.state.app1 == 0 : this.state.app != 0
+            ) ? (
               <View
                 style={{
-                  flexDirection: 'row',
+                  // flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: Screen.hp('4.5%'),
+                  // paddingVertical: Screen.hp('4.5%'), // disabled fb login for now
                   justifyContent: 'space-between',
-                  width: '25%',
+                  width: '60%',
                   alignSelf: 'center',
                 }}>
-                <TouchableOpacity onPress={() => this.FBL()}>
-                  <Image
-                    source={ImageView.fb}
-                    style={{ height: 40, width: 40 }}
-                    resizeMode="center"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.GL()}>
-                  <Image
+                {/* <TouchableOpacity  // disabled fb login for now
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    // justifyContent: 'space-between',
+                    backgroundColor: '#1877f2',
+                    borderRadius: 10,
+                    width: '100%',
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                  }}
+                  onPress={() => this.FBL()}>
+                  <Icon name="facebook" size={24} style={{paddingLeft: 2}} color={Colors.white} />
+                  <Text
+                    style={{
+                      fontFamily: Fonts.SemiBold,
+                      fontSize: Dimens.F16,
+                      color: Colors.white,
+                      paddingLeft: 22
+                    }}>
+                    Continue with Facebook
+                  </Text>
+                </TouchableOpacity> */}
+                {/* <View
+                  style={{
+                    width: 1,
+                    height: 36,
+                    backgroundColor: Colors.medium_gray,
+                  }}
+                /> */}
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    // justifyContent: 'center',
+                    backgroundColor: '#e44133',
+                    borderRadius: 10,
+                    width: '100%',
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                    marginTop: 12
+                  }}
+                  onPress={() => this.GL()}>
+                  {/* <Image
                     source={ImageView.google}
-                    style={{ height: 40, width: 40 }}
+                    style={{height: 40, width: 40}}
                     resizeMode="center"
-                  />
+                  /> */}
+                     <Icon name="google" size={24} color={Colors.white} />
+                  <Text
+                  style={{
+                    fontFamily: Fonts.SemiBold,
+                    fontSize: Dimens.F16,
+                    color: Colors.white,
+                    paddingLeft: 22
+                  }}>
+                    Continue with Google</Text>
                 </TouchableOpacity>
               </View>
-            :null } 
+            ) : null}
             <View
               style={{
                 flexDirection: 'row',
@@ -263,7 +316,7 @@ class Signin extends Component {
                 paddingVertical: Screen.hp('5%'),
                 alignSelf: 'center',
               }}>
-              <Text style={[c.textNormal, { alignSelf: 'center' }]}>
+              <Text style={[c.textNormal, {alignSelf: 'center'}]}>
                 {Strings.accunt}
               </Text>
 
@@ -274,7 +327,7 @@ class Signin extends Component {
                 <Text
                   style={[
                     c.textNormal,
-                    { color: Colors.primary, fontFamily: Fonts.SemiBold },
+                    {color: Colors.primary, fontFamily: Fonts.SemiBold},
                   ]}>
                   {' ' + Strings.Signup}
                 </Text>
@@ -287,8 +340,9 @@ class Signin extends Component {
   }
 
   login = async () => {
-    const { email, password } = this.state;
+    const {email, password} = this.state;
     const token = await messaging()?.getToken();
+    console.log({token})
     if (!email) {
       Snackbar(Strings.eEmail, Strings.close);
       return;
@@ -328,9 +382,9 @@ class Signin extends Component {
     let request = {
       email: email,
       password: password,
-      token: token
+      token: token,
     };
-    this.props.signIn(request)
+    this.props.signIn(request);
   };
 
   socialLogin = async (data, type) => {
@@ -338,14 +392,18 @@ class Signin extends Component {
     let request = {
       email: data.email,
       name: data.name,
-      profile: type == 1 ? data.picture.data.url ? data.picture.data.url : '' : data.profile,
+      profile:
+        type == 1
+          ? data.picture.data.url
+            ? data.picture.data.url
+            : ''
+          : data.profile,
       social: 1,
-      token: token
+      token: token,
     };
     console.log('request', request);
-    this.props.signIn(request)
-  }
-
+    this.props.signIn(request);
+  };
 }
 const mapStateToProps = state => {
   return {
@@ -354,14 +412,14 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     signIn: data => {
-      dispatch(signIn(data))
+      dispatch(signIn(data));
     },
     SignInClear: data => {
-      dispatch(SignInClear(data))
+      dispatch(SignInClear(data));
     },
-  }
+  };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Signin);

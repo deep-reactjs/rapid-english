@@ -35,7 +35,9 @@ class Blog extends Component {
         <View style={c.flexStyle}>
           <Header
             text={'Blog'}
-            onBack={() => navigation.goBack()}
+            onBack={() => {
+              this.state.InterstitialAd.show()
+              navigation.goBack()}}
           />
           <SearchInput
             onSearch={(txt) => {
@@ -64,11 +66,12 @@ class Blog extends Component {
                   index={index}
                   fileURL={fileURL}
                   onPress={() => {
-                    try {
-                      this.state.InterstitialAd.show()
-                    } catch (error) {
-                      console.log('error', error);
-                    }
+                    // try {
+                    //   alert()
+                    //   this.state.InterstitialAd.show()
+                    // } catch (error) {
+                    //   console.log('error', error);
+                    // }
                     navigation.navigate('BlogView', { data: item })
                   }}
                 />

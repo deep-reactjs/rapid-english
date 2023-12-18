@@ -12,7 +12,7 @@ import {
 const Constants = {
   API_BASE_URL: 'https://rapid-english.com/api/',
   API_BASE_URL_LOCAL: 'https://beeinnow.in/rapid-english/api/',
-  GOOGLE_T_API_KEY: 'AIzaSyBWTAoqRxGUCCZeWit_VRE130UOGUQbgik',
+  GOOGLE_T_API_KEY: 'AIzaSyDYyMlsD5ZLNfmzLB-5yvEzuKhQcIr1nJ4',
   GOOGLE_SIGNIN_KEY_ANDROID:
     '310538639449-0j36mlu6iu2j7ngpr320lub25erergdh.apps.googleusercontent.com',
     
@@ -27,9 +27,9 @@ const Constants = {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 80,
   },
-  BANNER_KEY:Platform.OS == 'android' ?"ca-app-pub-9542796943771971/3092653304":'ca-app-pub-9542796943771971/4354636226',
-  REWARDED:Platform.OS == 'android' ?'ca-app-pub-9542796943771971/1025967594':'ca-app-pub-9542796943771971/6289686962',
-  INTERSTITIAL__KEY:Platform.OS == 'android' ?"ca-app-pub-9542796943771971/3831019903":'ca-app-pub-9542796943771971/4602596976'
+  BANNER_KEY: Platform.OS == 'android' ?"ca-app-pub-9542796943771971/4018042184":'ca-app-pub-9542796943771971/4354636226',
+  REWARDED: Platform.OS == 'android' ?'ca-app-pub-9542796943771971/1025967594':'ca-app-pub-9542796943771971/6289686962',
+  INTERSTITIAL__KEY: Platform.OS == 'android' ?"ca-app-pub-9542796943771971/6006783416":'ca-app-pub-9542796943771971/4602596976'
 };
 
 const Colors = {
@@ -109,6 +109,7 @@ const ImageView = {
   erro: require('../assets/erro.png'),
   phone: require('../assets/phone.png'),
   chat: require('../assets/chat.png'),
+  faq: require('../assets/faq.png'),
   logout: require('../assets/log-out.png'),
   down_arrow: require('../assets/down-arrow.png'),
   camera: require('../assets/camera.png'),

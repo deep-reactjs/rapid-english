@@ -50,6 +50,8 @@ import {PrefManager} from '../utils';
 import { AppOpenAdProvider, TestIds } from '@react-native-admob/admob';
 import configureStore from '../redux/configureStore';
 import { Storage_Key } from "../config/appConstants";
+import Messages from "../screens/Messages/Message";
+import Faq from "../screens/Faq/Faq";
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
 const Stack = createNativeStackNavigator();
@@ -87,6 +89,18 @@ const AuthNavigator = () => (
     <Stack.Screen
       name={'Quiz'}
       component={Quiz}
+      navigationOptions={{ headerShown: false, header: false }}
+      options={{ animation: 'slide_from_bottom' }}
+    />
+    <Stack.Screen
+      name={'Messages'}
+      component={Messages}
+      navigationOptions={{ headerShown: false, header: false }}
+      options={{ animation: 'slide_from_bottom' }}
+    />
+     <Stack.Screen
+      name={'Faq'}
+      component={Faq}
       navigationOptions={{ headerShown: false, header: false }}
       options={{ animation: 'slide_from_bottom' }}
     />
@@ -139,7 +153,8 @@ const App = () => {
       setId(id)
     })
   }, [id]);
-
+ 
+  
   return (
     <NavigationContainer>
       <Provider store={Store}>

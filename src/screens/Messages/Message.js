@@ -167,7 +167,7 @@ const Messages = ({navigation}) => {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer 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`,
+              Authorization: `Bearer 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`,
             },
           },
         );

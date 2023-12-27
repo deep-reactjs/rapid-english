@@ -22,7 +22,7 @@ import Sound from 'react-native-sound';
 import { InterstitialAd } from '@react-native-admob/admob';
 import { useFocusEffect } from '@react-navigation/native';
 import LoaderChat from '../../component/LoaderChat';
-
+import {REACT_APP_CHATGPT_API} from "@env"
 const Messages = ({navigation}) => {
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState([]);
@@ -167,7 +167,7 @@ const Messages = ({navigation}) => {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer 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`,
+              Authorization: `Bearer ${REACT_APP_CHATGPT_API}`,
             },
           },
         );

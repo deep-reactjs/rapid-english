@@ -6,7 +6,7 @@ import {PrefManager} from '../../utils';
 import {connect} from 'react-redux';
 import {sendOtp, OtpClear} from '../../redux/actions/authActions';
 import {signUp, SignUpClear} from '../../redux/actions/authActions';
-// import messaging from '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging';
 import {
   View,
   StyleSheet,
@@ -110,7 +110,17 @@ class OtpVerify extends Component {
       this.props.signUp(request);
     });
   };
-
+verifyOtp = () => {
+  const {email, name, mobile, password} = this?.props?.route?.params;
+  const request = {
+      email,
+      password,
+      mobile,
+      name,
+      otp: this.state.code
+  }
+  this.props.signUp(request);
+  }
   // static getDerivedStateFromProps(props, state) {
   //   if (Object.keys(props.otpData).length !== 0 ) {
   //     return {
@@ -148,7 +158,7 @@ class OtpVerify extends Component {
       name: name,
       mobile: mobile,
       password: password,
-      token:''
+      token:token
     };
     this.props.sendOtp(request);
   };
@@ -230,7 +240,7 @@ class OtpVerify extends Component {
               visible={loading}
               containerStyle={[c.Button, {marginTop: Screen.hp(6)}]}
               onPress={() => {
-                console.log('data',data);
+                console.log('data',data, this?.props?.route?.params);
                 if (Object.keys(data).length !== 0 && data.status) {
                   if (data.data == this.state.code) {
                     this.isOtpVerify();

@@ -5,7 +5,10 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Modal,Linking, Platform
+  Modal,
+  Linking,
+  Platform,
+  DeviceInfo,
 } from 'react-native';
 import {Home, Login} from '../navigation/NavigationHelper';
 import {
@@ -20,7 +23,7 @@ import {AppRoot} from '../component';
 import {connect} from 'react-redux';
 import {appVersion} from '../redux/actions/splashActions';
 import {PrefManager} from '../utils';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 const styles = StyleSheet.create({
   imgStyle: {
     height: Screen.hp('28%'),
@@ -64,8 +67,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-const android_version = 7.0;
-const ios_version = 4.0;
+const android_version = '7.0';
+const ios_version = '4.0';
 var androidurl = '';
 var iosurl = '';
 class Splash extends Component {
@@ -81,7 +84,7 @@ class Splash extends Component {
     };
     this.props.appVersion();
   }
-  
+
   componentDidMount() {
     Screen.OrientationChange(this);
   }
@@ -108,15 +111,20 @@ class Splash extends Component {
           }),
         );
       } else {
-        PrefManager.setValue(Storage_Key.app,JSON.stringify(data.data.app ? data.data.app : 0))
-        PrefManager.setValue(Storage_Key.app1,JSON.stringify(data.data.app1 ? data.data.app1 : 1))
+        PrefManager.setValue(
+          Storage_Key.app,
+          JSON.stringify(data.data.app ? data.data.app : 0),
+        );
+        PrefManager.setValue(
+          Storage_Key.app1,
+          JSON.stringify(data.data.app1 ? data.data.app1 : 1),
+        );
         if (Platform.OS == 'android') {
           if (android_version == data.data.android_version) {
             PrefManager.getValue(Storage_Key.id).then(id => {
               if (id) {
                 this.props.navigation.dispatch(Home);
               } else {
-       
                 this.props.navigation.dispatch(Login);
               }
             });
@@ -128,7 +136,7 @@ class Splash extends Component {
                 this.props.navigation.dispatch(Home);
               } else {
                 this.props.navigation.dispatch(Login);
-                 }
+              }
             });
           }
         }
@@ -147,12 +155,17 @@ class Splash extends Component {
   static getDerivedStateFromProps(props, state) {
     if (
       props.data.length !== 0 &&
-      props.data.flag !== state.flag &&
+      props?.data?.flag !== state?.flag &&
       state.Appversion
     ) {
       return {
-        modalVisible:
-          android_version == (Platform.OS == 'ios' ?props.data.data.ios_version : props.data.data.android_version) ? false : true,
+        modalVisible: (
+          Platform.OS == 'ios'
+            ? ios_version === props.data.data.ios_version
+            : android_version === props.data.data.android_version
+        )
+          ? false
+          : true,
         flag: true,
         Appversion: false,
       };
@@ -160,10 +173,17 @@ class Splash extends Component {
   }
 
   render() {
+    console.log('res', this.props);
     const {} = this.props;
     return (
       <AppRoot>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:Colors.white}}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: Colors.white,
+          }}>
           <Image
             resizeMode={'contain'}
             source={ImageView.logo}

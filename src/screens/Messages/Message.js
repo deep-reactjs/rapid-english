@@ -11,7 +11,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
-import {Button, Header} from '../../component';
+import {Ad, Button, Header} from '../../component';
 import c from '../../styles/commonStyle';
 import axios from 'axios';
 import Clipboard from '@react-native-community/clipboard';
@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Colors, Constants, ImageView, Strings} from '../../config/appConstants';
 import {Dimens} from '../../config/appConstants';
 import Sound from 'react-native-sound';
-import { InterstitialAd } from '@react-native-admob/admob';
+import { BannerAd, BannerAdSize, InterstitialAd } from '@react-native-admob/admob';
 import { useFocusEffect } from '@react-navigation/native';
 import LoaderChat from '../../component/LoaderChat';
 import {REACT_APP_CHATGPT_API} from "@env"
@@ -32,7 +32,15 @@ const Messages = ({navigation}) => {
     Clipboard.setString(content);
   };
   const [time, setTime] = useState(null);
-
+  const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      interstitial.show()
+    }, 45000)
+    return () => {
+      clearInterval(interval)
+    }
+  },[interstitial])
   // useFocusEffect(
   //   React.useCallback(() => {
   //     const onFocus = () => {
@@ -273,6 +281,7 @@ const Messages = ({navigation}) => {
                         setCopied(index)
                         copyToClipboard(item.text);
                         setTimeout(() => {
+                          interstitial.show()
                           setCopied(false)
                         }, 2000)
                       }}>
@@ -303,6 +312,14 @@ const Messages = ({navigation}) => {
           text="Send"
           onPress={() => handleSend(inputText, 'user')}
         />
+      </View>
+      <View>
+      {/* <Ad adTypes={'Banner'} /> */}
+      <BannerAd
+       onAdFailedToLoad={(error) => console.error(error)}
+            size={BannerAdSize.ADAPTIVE_BANNER}
+            unitId={Constants.BANNER_KEY}
+          />
       </View>
     </View>
   );
@@ -342,6 +359,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderTopWidth: 1,
+    borderBottomWidth: 1,
     borderColor: Colors.light,
     // paddingVertical: 4,
     paddingHorizontal: 16,

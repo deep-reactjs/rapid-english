@@ -54,7 +54,6 @@ class Blog extends Component {
             }}
             searchText={this.state.search}
           />
-
           <FlatList
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'always'}

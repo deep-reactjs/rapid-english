@@ -27,9 +27,10 @@ const Constants = {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 80,
   },
-  BANNER_KEY: Platform.OS == 'android' ?"ca-app-pub-9542796943771971/4018042184":'ca-app-pub-9542796943771971/4354636226',
-  REWARDED: Platform.OS == 'android' ?'ca-app-pub-9542796943771971/1025967594':'ca-app-pub-9542796943771971/6289686962',
-  INTERSTITIAL__KEY: Platform.OS == 'android' ?"ca-app-pub-9542796943771971/6006783416":'ca-app-pub-9542796943771971/4602596976'
+  BANNER_KEY: "ca-app-pub-3940256099942544/9214589741" || Platform.OS == 'android' ?"ca-app-pub-9542796943771971/4018042184":'ca-app-pub-9542796943771971/4354636226',
+  REWARDED: "ca-app-pub-3940256099942544/5224354917" || Platform.OS == 'android' ?'ca-app-pub-9542796943771971/1025967594':'ca-app-pub-9542796943771971/6289686962',
+  REWARDED_INTERSTITIAL: "ca-app-pub-3940256099942544/5224354917" || Platform.OS === 'android' ? "ca-app-pub-9542796943771971/5327927186" : "ca-app-pub-9542796943771971/4660561397",
+  INTERSTITIAL__KEY: "ca-app-pub-3940256099942544/1033173712" || Platform.OS == 'android' ?"ca-app-pub-9542796943771971/6006783416":'ca-app-pub-9542796943771971/4602596976'
 };
 
 const Colors = {
@@ -133,7 +134,8 @@ const ImageView = {
   twitter: require('../assets/twitter.png'),
   youtube: require('../assets/youtube.png'),
   gmail: require('../assets/gmail.png'),
-  password: require('../assets/password.png')
+  password: require('../assets/password.png'),
+  download: require('../assets/download.png')
 };
 const Strings = {
   App_Title: 'Rapid',

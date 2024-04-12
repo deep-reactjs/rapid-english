@@ -19,10 +19,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Colors, Constants, ImageView, Strings} from '../../config/appConstants';
 import {Dimens} from '../../config/appConstants';
 import Sound from 'react-native-sound';
-import { BannerAd, BannerAdSize, InterstitialAd, useInterstitialAd } from '@react-native-admob/admob';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+  BannerAd,
+  BannerAdSize,
+  InterstitialAd,
+  useInterstitialAd,
+} from '@react-native-admob/admob';
+import {useFocusEffect} from '@react-navigation/native';
 import LoaderChat from '../../component/LoaderChat';
-import {REACT_APP_CHATGPT_API} from "@env"
+import {REACT_APP_CHATGPT_API} from '@env';
 
 const hookOptions = {
   loadOnDismissed: true,
@@ -31,25 +36,23 @@ const Messages = ({navigation}) => {
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
   const copyToClipboard = content => {
     Clipboard.setString(content);
   };
   const [time, setTime] = useState(null);
-  // const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY,
-  //   {
-  //     loadOnDismissed: true,
-  // });
-  const {show, adLoaded, load} = useInterstitialAd(Constants.INTERSTITIAL__KEY, {requestOptions: hookOptions})
+  const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY);
+  // const {show, adLoaded, load} = useInterstitialAd(Constants.INTERSTITIAL__KEY, {requestOptions: hookOptions})
   useEffect(() => {
     const interval = setTimeout(() => {
-      console.log('use effect called')
-      show()
-    }, 45000)
+      interstitial?.load();
+      console.log('use effect called');
+      interstitial?.show().catch(error => console.log(error));
+    }, 45000);
     return () => {
-      clearTimeout(interval)
-    }
-  },[adLoaded])
+      clearTimeout(interval);
+    };
+  }, [interstitial]);
   // useFocusEffect(
   //   React.useCallback(() => {
   //     const onFocus = () => {
@@ -252,7 +255,11 @@ const Messages = ({navigation}) => {
             </View>
           )}
           ListFooterComponent={
-            isLoading && <View style={{paddingVertical: 12}}><LoaderChat /></View>
+            isLoading && (
+              <View style={{paddingVertical: 12}}>
+                <LoaderChat />
+              </View>
+            )
           }
           contentContainerStyle={{flex: 1}}
           renderItem={({item, index}) => (
@@ -287,20 +294,21 @@ const Messages = ({navigation}) => {
                     <TouchableOpacity
                       style={styles.copyContent}
                       onPress={() => {
-                        setCopied(index)
+                        setCopied(index);
                         copyToClipboard(item.text);
                         setTimeout(() => {
-                          if(!adLoaded){
-                            load()
-                          }
-                          show()
-                          setCopied(false)
-                        }, 2000)
+                          interstitial?.show();
+                          setCopied(false);
+                        }, 2000);
                       }}>
-                     <Icon
-                        name={copied === index ? "check-circle-outline" : "content-copy"}
+                      <Icon
+                        name={
+                          copied === index
+                            ? 'check-circle-outline'
+                            : 'content-copy'
+                        }
                         size={20}
-                        color={copied===index ? Colors.green : Colors.black}
+                        color={copied === index ? Colors.green : Colors.black}
                       />
                     </TouchableOpacity>
                   )}
@@ -326,12 +334,12 @@ const Messages = ({navigation}) => {
         />
       </View>
       <View>
-      {/* <Ad adTypes={'Banner'} /> */}
-      <BannerAd
-       onAdFailedToLoad={(error) => console.error(error)}
-            size={BannerAdSize.ADAPTIVE_BANNER}
-            unitId={Constants.BANNER_KEY}
-          />
+        {/* <Ad adTypes={'Banner'} /> */}
+        <BannerAd
+          onAdFailedToLoad={error => console.error(error)}
+          size={BannerAdSize.ADAPTIVE_BANNER}
+          unitId={Constants.BANNER_KEY}
+        />
       </View>
     </View>
   );
@@ -390,11 +398,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 10,
-  }
+  },
 });
 
 export default Messages;
-
 
 // class component
 // import React, { Component } from 'react';

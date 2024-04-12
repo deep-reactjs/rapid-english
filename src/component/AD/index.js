@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet,View} from 'react-native';
 import { Constants } from "../../config/appConstants";
-import {BannerAd,InterstitialAd,TestIds, BannerAdSize, } from '@react-native-admob/admob';
+import {BannerAd,InterstitialAd,TestIds, BannerAdSize, RewardedAd, } from '@react-native-admob/admob';
 
 const INTERSTITIAL__KEY = Constants.BANNER_KEY;
 const BANNER_KEY = Constants.BANNER_KEY;
@@ -51,14 +51,13 @@ export default class Banner extends Component {
       //       unitId={REWARDED_INTERSTITIAL__KEY}
       //     />
       //   ); 
-      //   case 'Rewarded':
-      //   return (
-      //     <BannerAd
-      //       style={styles.banner}
-      //       size={BannerAdSize.ADAPTIVE_BANNER}
-      //       unitId={REWARDED_KEY}
-      //     />
-      //   ); 
+        // case 'Rewarded':
+        // return (
+        //   <RewardedAd
+        //     size={BannerAdSize.FULL_BANNER}
+        //     unitId={"ca-app-pub-3940256099942544/5224354917"}
+        //   />
+        // ); 
       //  case 'test':
       //   return (
       //     <BannerAd

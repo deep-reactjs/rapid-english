@@ -8,6 +8,7 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import c from '../../styles/commonStyle';
 import {
@@ -24,6 +25,7 @@ import {
   InterstitialAd,
   RewardedAd,
   RewardedInterstitialAd,
+  useRewardedAd,
 } from '@react-native-admob/admob';
 import moment from 'moment/moment';
 const s = StyleSheet.create({
@@ -45,8 +47,12 @@ export default class discountList extends React.Component {
   state = {
     refresh: false,
     downloading: false,
-    rewardAd: RewardedAd.createAd(Constants.REWARDED),
+    rewardAd: InterstitialAd.createAd(Constants.INTERSTITIAL__KEY, {
+      loadOnMounted: true,
+      loadOnDismissed: true,
+    }),
   };
+
   componentDidMount() {
     Screen.OrientationChange(this);
     this.state.rewardAd.addEventListener('adDismissed', () => {
@@ -80,7 +86,7 @@ export default class discountList extends React.Component {
     try {
       this.setState({downloading: id});
 
-      const pdfName = 'rapid-english-blog' + id  + '.pdf';
+      const pdfName = 'rapid-english-blog' + id + '.pdf';
       const pdfUrl = url;
       const {dirs} = RNFetchBlob.fs;
       let dirToSave = Platform.select({
@@ -96,14 +102,14 @@ export default class discountList extends React.Component {
       // Save the PDF file using RNFetchBlob
       const path = `${dirToSave}/${pdfName}`;
       await RNFetchBlob.fs.writeFile(path, base64Data, 'base64');
-      
+
       this.setState({downloading: false});
       Snackbar('File downloded successfully');
-      if(Platform.OS === "ios"){
+      if (Platform.OS === 'ios') {
         setTimeout(() => {
-          RNFetchBlob.ios.openDocument(path)
-        }, 1000)
-        }
+          RNFetchBlob.ios.openDocument(path);
+        }, 1000);
+      }
       console.log('PDF downloaded to:', path);
     } catch (error) {
       console.log({error});
@@ -151,50 +157,230 @@ export default class discountList extends React.Component {
             />
           </TouchableOpacity>
           {/* <View style={[c.flexRowJus, {paddingBottom: 10}]}> */}
-            {/* <Text
+          {/* <Text
               onPress={() => this.props.onPress()}
               style={[c.textNormal, {flex: 1}]}>
               {rowData.title}
             </Text> */}
-                 <Button
+          <Button
             text={'Download'}
             visible={this.state.downloading}
-            containerStyle={[c.Button, { marginBottom: Screen.hp(2.5) }]}
-            onPress={() => {
-              Alert.alert(
-                'Confirmation',
-                'To download the PDF, watch the ad...',
-                [
-                  {
-                    text: 'No',
-                    onPress: () => console.log('no'),
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'Yes',
-                    onPress: async () => {
+            containerStyle={[c.Button, {marginBottom: Screen.hp(2.5)}]}
+            onPress={async() => {
+            
                       try {
-                        this.setState({downloading: rowData?.id});
-                        await this.state.rewardAd.load();
-                        await this.state.rewardAd.show();
+                        const granted = await PermissionsAndroid?.requestMultiple(
+                          [PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE],
+                          {
+                            title: 'storage title',
+                            message: 'storage_permission',
+                          },
+                        );
+                        console.log('granted', granted[PermissionsAndroid?.PERMISSIONS.WRITE_EXTERNAL_STORAGE]);
+                        if (granted[PermissionsAndroid?.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid?.RESULTS?.GRANTED || granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] === PermissionsAndroid?.RESULTS?.GRANTED) {
+                          this.setState({downloading: rowData?.id});
+                          await this.state.rewardAd.load({
+                            serverSideVerificationOptions: {
+                              userId: rowData?.id,
+                            },
+                          });
+                          await this.state.rewardAd.show();
+                        } else {
+                          const mediaPermissions = await PermissionsAndroid.request(
+                              'android.permission.READ_MEDIA_IMAGES',
+                            {
+                              title: 'storage title',
+                              message: 'storage_permission',
+                            },
+                          );
+                          if (mediaPermissions === PermissionsAndroid.RESULTS.GRANTED) {
+                            this.setState({downloading: rowData?.id});
+                            await this.state.rewardAd.load({
+                              serverSideVerificationOptions: {
+                                userId: rowData?.id,
+                              },
+                            });
+                            await this.state.rewardAd.show();
+                          } else {
+                            Snackbar("Storage permission not allowed")
+                          }
+                        }
                       } catch (err) {
-                        console.log({err})
+                        console.log({err});
                         Snackbar('Please try again later');
                         this.setState({downloading: false});
                       }
-                    },
-                  },
-                ],
-                {cancelable: false},
-              );
             }}
           />
-            
+
           {/* </View> */}
         </TouchableOpacity>
-
         {(parseInt(rowID) + 1) % 2 == 0 && <Ad adTypes={'Interstitial'} />}
       </>
     );
   }
 }
+// import React, {useEffect, useState} from 'react';
+// import {
+//   StyleSheet,
+//   Text,
+//   View,
+//   Image,
+//   TouchableOpacity,
+//   Platform,
+//   Alert,
+// } from 'react-native';
+// import c from '../../styles/commonStyle';
+// import {Colors, Screen, Fonts, Constants} from '../../config/appConstants';
+// import {Ad, Button, Snackbar} from '../../component';
+// import RNFetchBlob from 'rn-fetch-blob';
+// import axios from 'axios';
+// import {
+//   InterstitialAd,
+//   RewardedAd,
+//   useRewardedAd,
+// } from '@react-native-admob/admob';
+// import {useNavigation} from '@react-navigation/native';
+
+// const s = StyleSheet.create({
+//   iconBg: {
+//     height: 30,
+//     width: 30,
+//     backgroundColor: Colors.light_gray,
+//     borderRadius: 20,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   lightTxt: {
+//     fontFamily: Fonts.Regular,
+//     color: Colors.dark_gray,
+//   },
+// });
+
+// const DiscountList = ({fileURL, index, item, onPress}) => {
+//   const [downloading, setDownloading] = useState(false);
+//   // const [rewardAd, setRewardAd] = useState(null);
+//   const navigation = useNavigation();
+//   const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY, {
+//     loadOnMounted: true,
+//     loadOnDismissed: true,
+//   });
+//   console.log({item})
+//   useEffect(() => {
+//     interstitial.addEventListener('adDismissed', () => {
+//       handleDownloadFile(item?.pdf_auto, item?.id);
+//     });
+//     return () => {
+//       interstitial.removeAllListeners();
+//     };
+//   }, [interstitial]);
+//   // useEffect(() => {
+//   //   if(adDismissed){
+//   //     handleDownloadFile(item?.pdf_auto, item?.id);
+//   //   }
+//   // }, [adDismissed, item]);
+//   // useEffect(() => {
+//   //   console.log({adLoadError})
+//   //   if(adLoadError && downloading){
+//   //     setDownloading(false)
+//   //     Snackbar('Please try again later');
+//   //   }
+//   // }, [downloading, adLoadError])
+//   const textView = (key, value) => (
+//     <View style={c.flatRow}>
+//       <Text style={c.flatTBold}>{key}</Text>
+//       <Text style={c.flatT}>:</Text>
+//       <Text style={c.flatTNormal}>{value}</Text>
+//     </View>
+//   );
+//   const blobToBase64 = async blob => {
+//     return new Promise((resolve, reject) => {
+//       const reader = new FileReader();
+//       reader.onload = () => {
+//         const base64String = reader.result.split(',')[1];
+//         resolve(base64String);
+//       };
+//       reader.onerror = reject;
+//       reader.readAsDataURL(blob);
+//     });
+//   };
+//   const handleDownloadFile = async (url, id) => {
+//     try {
+//       setDownloading(id);
+//       const pdfName = 'rapid-english-blog' + id + '.pdf';
+//       const pdfUrl = url;
+//       const response = await axios.get(pdfUrl, {responseType: 'blob'});
+//       const base64Data = await blobToBase64(response.data);
+//       const path = `${RNFetchBlob.fs.dirs.DownloadDir}/${pdfName}`;
+//       await RNFetchBlob.fs.writeFile(path, base64Data, 'base64');
+//       setDownloading(false);
+//       Snackbar('File downloaded successfully');
+//       if (Platform.OS === 'ios') {
+//         setTimeout(() => {
+//           RNFetchBlob.ios.openDocument(path);
+//         }, 1000);
+//       }
+//       console.log('PDF downloaded to:', path);
+//     } catch (error) {
+//       console.log({error});
+//       Snackbar('Please try again later');
+//       setDownloading(false);
+//     }
+//   };
+
+//   const handleDownloadButtonPress = async () => {
+//     try {
+//       setDownloading(item?.id);
+//       await interstitial.show();
+//     } catch (err) {
+//       console.log({err});
+//       Snackbar('Please try again later');
+//       setDownloading(false);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <TouchableOpacity
+//         activeOpacity={0.9}
+//         style={{
+//           marginTop: index == 0 ? 0 : 0,
+//           paddingVertical: 0,
+//           borderBottomWidth: 1,
+//           borderBottomColor: Colors.light_gray,
+//           backgroundColor: 'white',
+//           paddingHorizontal: Screen.wp(3.8),
+//         }}>
+//         <Text onPress={onPress} style={s.lightTxt}>
+//           {item.time}
+//         </Text>
+//         <TouchableOpacity
+//           onPress={onPress}
+//           style={{flex: 1, bottom: Screen.hp(0.8)}}>
+//           {item.title ? <Text style={c.textBold}>{item.name}</Text> : null}
+//           <Image
+//             resizeMode="cover"
+//             style={{
+//               width: '99%',
+//               height: Screen.hp(20),
+//               marginVertical: Screen.hp(1),
+//               borderRadius: Screen.wp(1),
+//               backgroundColor: Colors.light_gray,
+//             }}
+//             source={{uri: fileURL + item.image}}
+//           />
+//         </TouchableOpacity>
+//         <Button
+//           text={'Download'}
+//           visible={downloading}
+//           containerStyle={[c.Button, {marginBottom: Screen.hp(2.5)}]}
+//           onPress={handleDownloadButtonPress}
+//         />
+//       </TouchableOpacity>
+//       {(parseInt(index) + 1) % 2 == 0 && <Ad adTypes={'Interstitial'} />}
+//     </>
+//   );
+// };
+
+// export default DiscountList;

@@ -52,6 +52,7 @@ import configureStore from '../redux/configureStore';
 import { Storage_Key } from "../config/appConstants";
 import Messages from "../screens/Messages/Message";
 import Faq from "../screens/Faq/Faq";
+import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
 const Stack = createNativeStackNavigator();
@@ -147,7 +148,28 @@ const AuthNavigator = () => (
   </Stack.Navigator>
 );
 const App = () => {
+  const requestNotificationPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
+  };
+  
+  const checkNotificationPermission = async () => {
+    const result = await check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
+  };
+  const requestPermission = async () => {
+    const checkPermission = await checkNotificationPermission();
+    if (checkPermission !== RESULTS.GRANTED) {
+     const request = await requestNotificationPermission();
+       if(request !== RESULTS.GRANTED){
+       console.log('notifications rejected')
+        }
+    }
+  };
   const [id, setId] = useState('');
+  useEffect(() => {
+    requestPermission()
+  }, [])
   useEffect(() => {
     PrefManager.getValue(Storage_Key.id).then(id=>{
       setId(id)

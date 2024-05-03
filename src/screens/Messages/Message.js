@@ -41,13 +41,18 @@ const Messages = ({navigation}) => {
     Clipboard.setString(content);
   };
   const [time, setTime] = useState(null);
-  const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY);
+  const interstitial = InterstitialAd.createAd(Constants.INTERSTITIAL__KEY, {requestOptions: {
+    serverSideVerificationOptions: {
+      userId: '123'
+    }
+  }});
   // const {show, adLoaded, load} = useInterstitialAd(Constants.INTERSTITIAL__KEY, {requestOptions: hookOptions})
   useEffect(() => {
-    const interval = setTimeout(() => {
-      interstitial?.load();
+
+    const interval = setTimeout(async() => {
       console.log('use effect called');
-      interstitial?.show().catch(error => console.log(error));
+      await interstitial?.load();
+      await interstitial?.show();
     }, 45000);
     return () => {
       clearTimeout(interval);
@@ -296,8 +301,9 @@ const Messages = ({navigation}) => {
                       onPress={() => {
                         setCopied(index);
                         copyToClipboard(item.text);
-                        setTimeout(() => {
-                          interstitial?.show();
+                        setTimeout(async () => {
+                          await interstitial?.load();
+                          await interstitial?.show();
                           setCopied(false);
                         }, 2000);
                       }}>
@@ -321,7 +327,7 @@ const Messages = ({navigation}) => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Type your message..."
+          placeholder="Type or paste your text here"
           value={inputText}
           onChangeText={setInputText}
           multiline={true}

@@ -53,15 +53,15 @@ export default class discountList extends React.Component {
     }),
   };
 
-  componentDidMount() {
-    Screen.OrientationChange(this);
-    this.state.rewardAd.addEventListener('adDismissed', () => {
-      this.handleDownloadFile(this.props.item?.pdf_auto, this.props.item?.id);
-    });
-  }
-  componentWillUnmount() {
-    this.state.rewardAd.removeAllListeners();
-  }
+  // componentDidMount() {
+  //   Screen.OrientationChange(this);
+  //   this.state.rewardAd.addEventListener('adDismissed', () => {
+  //     this.handleDownloadFile(this.props.item?.pdf_auto, this.props.item?.id);
+  //   });
+  // }
+  // componentWillUnmount() {
+  //   this.state.rewardAd.removeAllListeners();
+  // }
   textView = (key, value) => (
     <View style={c.flatRow}>
       <Text style={c.flatTBold}>{key}</Text>
@@ -110,7 +110,24 @@ export default class discountList extends React.Component {
           RNFetchBlob.ios.openDocument(path);
         }, 1000);
       }
+      if(Platform.OS === "android"){
+        RNFetchBlob.android.addCompleteDownload({
+          title:'rapid-english-blog' + id + moment().format('DDMMYY-hhmmss') + '.pdf',
+          description: 'Download complete',
+          mime: 'application/pdf',
+          path: `${dirToSave}/${pdfName}`,
+          showNotification: true,
+        })
+      }
       console.log('PDF downloaded to:', path);
+      setTimeout(async() => {
+        await this.state.rewardAd.load({
+          serverSideVerificationOptions: {
+            userId: id,
+          },
+        });
+        await this.state.rewardAd.show();
+      }, 1500)
     } catch (error) {
       console.log({error});
       Snackbar('Please try again later');
@@ -180,12 +197,7 @@ export default class discountList extends React.Component {
                         console.log('granted', granted[PermissionsAndroid?.PERMISSIONS.WRITE_EXTERNAL_STORAGE]);
                         if (granted[PermissionsAndroid?.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid?.RESULTS?.GRANTED || granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] === PermissionsAndroid?.RESULTS?.GRANTED) {
                           this.setState({downloading: rowData?.id});
-                          await this.state.rewardAd.load({
-                            serverSideVerificationOptions: {
-                              userId: rowData?.id,
-                            },
-                          });
-                          await this.state.rewardAd.show();
+                          this.handleDownloadFile(this.props.item?.pdf_auto, this.props.item?.id);
                         } else {
                           const mediaPermissions = await PermissionsAndroid.request(
                               'android.permission.READ_MEDIA_IMAGES',
@@ -196,12 +208,8 @@ export default class discountList extends React.Component {
                           );
                           if (mediaPermissions === PermissionsAndroid.RESULTS.GRANTED) {
                             this.setState({downloading: rowData?.id});
-                            await this.state.rewardAd.load({
-                              serverSideVerificationOptions: {
-                                userId: rowData?.id,
-                              },
-                            });
-                            await this.state.rewardAd.show();
+                            this.handleDownloadFile(this.props.item?.pdf_auto, this.props.item?.id);
+                            
                           } else {
                             Snackbar("Storage permission not allowed")
                           }

@@ -99,31 +99,31 @@ const Home = ({navigation}) => {
     console.log('[App] onRegister: ', token);
   };
 
-  // useEffect(async () => {
-  //   var time;
-  //   navigation.addListener('focus', () => {
-  //     try {
-  //       const interstitial = InterstitialAd.createAd(
-  //         Constants.INTERSTITIAL__KEY,
-  //       );
-  //       time = setTimeout(() => {
-  //         interstitial.show();
-  //       }, 8000);
-  //     } catch (error) {
-  //       console.log('error', error);
-  //     }
-  //   });
-  //   navigation.addListener('blur', () => {
-  //     clearTimeout(time);
-  //   });
-  //   // FCMService.registerAppWithFCM();
-  //   // FCMService.register(onRegister, onNotification, onOpenNotification);
-  //   localNotificationService.configure(onOpenNotification);
-  //   return () => {
-  //     // FCMService.unRegister();
-  //     // localNotificationService.unregister();
-  //   };
-  // }, []);
+  useEffect(async () => {
+    var time;
+    navigation.addListener('focus', () => {
+      try {
+        const interstitial = InterstitialAd.createAd(
+          Constants.INTERSTITIAL__KEY,
+        );
+        time = setTimeout(() => {
+          interstitial.show();
+        }, 8000);
+      } catch (error) {
+        console.log('error', error);
+      }
+    });
+    navigation.addListener('blur', () => {
+      clearTimeout(time);
+    });
+    // FCMService.registerAppWithFCM();
+    // FCMService.register(onRegister, onNotification, onOpenNotification);
+    localNotificationService.configure(onOpenNotification);
+    return () => {
+      // FCMService.unRegister();
+      // localNotificationService.unregister();
+    };
+  }, []);
   return (
     <AppRoot>
       <Header

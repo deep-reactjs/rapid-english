@@ -1,48 +1,48 @@
-import React, {Component} from 'react';
+import { InterstitialAd } from '@react-native-admob/admob';
+import React, { Component } from 'react';
 import {
-  AppRoot,
-  Separator,
-  ProgressBar,
-  Ad,
-  Header,
-  Loader,
-  Button,
-} from '../../component';
-import c from '../../styles/commonStyle';
-import {
-  Screen,
-  Colors,
-  ImageView,
-  Storage_Key,
-  Strings,
-  Fonts,
-  Dimens,
-  Constants,
-} from '../../config/appConstants';
-import {
-  StyleSheet,
+  Image,
+  Modal,
   ScrollView,
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  Image,
   Vibration,
-  Modal,
+  View,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {PrefManager} from '../../utils';
-import Sound from 'react-native-sound';
-import ConfettiCannon from 'react-native-confetti-cannon';
 import * as Animatable from 'react-native-animatable';
-import {InterstitialAd, TestIds} from '@react-native-admob/admob';
-import {quizActions, onQuizClear} from '../../redux/actions/quizActions';
+import ConfettiCannon from 'react-native-confetti-cannon';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
+import Sound from 'react-native-sound';
+import ViewShot from 'react-native-view-shot';
+import { connect } from 'react-redux';
+import {
+  Ad,
+  AppRoot,
+  Button,
+  Header,
+  Loader,
+  ProgressBar,
+  Separator,
+} from '../../component';
+import {
+  Colors,
+  Constants,
+  Dimens,
+  Fonts,
+  ImageView,
+  Screen,
+  Storage_Key,
+  Strings,
+} from '../../config/appConstants';
+import { onQuizClear, quizActions } from '../../redux/actions/quizActions';
 import {
   saveAnswerActions,
   saveAnswerClear,
 } from '../../redux/actions/saveAnswerActions';
-import ViewShot from 'react-native-view-shot';
-import RNFS from 'react-native-fs'
-import Share from 'react-native-share';
+import c from '../../styles/commonStyle';
+import { PrefManager } from '../../utils';
 const s = StyleSheet.create({
   viewRoot: {
     backgroundColor: Colors.shadow,

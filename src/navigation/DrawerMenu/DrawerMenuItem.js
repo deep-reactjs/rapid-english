@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, FlatList } from 'react-native';
-import { AppRoot, Snackbar } from '../../component';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {CommonActions} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {Alert, FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
+import {useDispatch} from 'react-redux';
+import {AppRoot, Snackbar} from '../../component';
 import {
   Colors,
+  Dimens,
   Fonts,
   ImageView,
-  Dimens,
   Storage_Key,
   Strings,
 } from '../../config/appConstants';
-import LinearGradient from 'react-native-linear-gradient';
-import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
-import { MenuList } from './MenuList';
-import { onLogout } from '../../redux/actions/authActions';
-import { PrefManager } from '../../utils';
-import { CommonActions } from "@react-navigation/native";
-import { Alert } from 'react-native';
-import { DELETE, UPDATEPROFILE } from '../../utils/HttpService';
-import { Post } from '../../services/api.service';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useDispatch } from 'react-redux';
+import {onLogout} from '../../redux/actions/authActions';
+import {Post} from '../../services/api.service';
+import {PrefManager} from '../../utils';
+import {DELETE} from '../../utils/HttpService';
+import {MenuList} from './MenuList';
 const s = StyleSheet.create({
   top: {
     paddingVertical: 20,
@@ -45,7 +44,7 @@ const s = StyleSheet.create({
     fontFamily: Fonts.Regular,
     fontSize: Dimens.F20,
     color: Colors.white,
-    left: 8
+    left: 8,
   },
   text: {
     fontFamily: Fonts.Regular,
@@ -76,23 +75,20 @@ const s = StyleSheet.create({
   },
 });
 
-
-
-const DrawerMenuItem = ({ navigation }) => {
+const DrawerMenuItem = ({navigation}) => {
   const [name, setName] = useState('');
   const [refresh, setRefresh] = useState(false);
   const [i, setIndex] = useState(0);
   const dispatch = useDispatch();
-  const logoutData = (data) =>
-    dispatch(onLogout(data));
+  const logoutData = data => dispatch(onLogout(data));
 
   useEffect(() => {
     PrefManager.getValue(Storage_Key.name).then(name => {
-      setName(name)
-    })
-  }, [navigation])
+      setName(name);
+    });
+  }, [navigation]);
   const isLogout = async () => {
-    setRefresh(!refresh)
+    setRefresh(!refresh);
     PrefManager.removeValue(Storage_Key.id);
     PrefManager.removeValue(Storage_Key.email);
     PrefManager.removeValue(Storage_Key.name);
@@ -100,27 +96,26 @@ const DrawerMenuItem = ({ navigation }) => {
     PrefManager.removeValue(Storage_Key.phone);
     logoutData();
     setTimeout(() => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "Signin" }],
-      })
-    );
-   }, 500);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Signin'}],
+        }),
+      );
+    }, 500);
     try {
       await GoogleSignin.signOut();
-    } catch (error) {
-    }
-  }
+    } catch (error) {}
+  };
   const DeleteAccount = async () => {
     let id = await PrefManager.getValue(Storage_Key.id);
     let request = {
       id: id,
     };
-    Post(DELETE,request).then(
+    Post(DELETE, request).then(
       result => {
         if (result.status) {
-          isLogout()
+          isLogout();
         } else {
           Snackbar(result.data.message, Strings.close);
           dispatch(AccountUpdateFail(result));
@@ -132,14 +127,14 @@ const DrawerMenuItem = ({ navigation }) => {
           Strings.close,
         );
       },
-    )
-  }
+    );
+  };
   return (
     <AppRoot>
       <ScrollView showsVerticalScrollIndicator={false}>
         <LinearGradient
-          start={{ x: 1, y: 0 }}
-          end={{ x: 1, y: 1 }}
+          start={{x: 1, y: 0}}
+          end={{x: 1, y: 1}}
           colors={[Colors.primary, Colors.secondary]}
           style={s.top}>
           <View style={s.round}>
@@ -161,38 +156,30 @@ const DrawerMenuItem = ({ navigation }) => {
                 alignItems: 'center',
               }}>
               <Image
-                style={[s.icon, { tintColor: 'white', right: 6 }]}
+                style={[s.icon, {tintColor: 'white', right: 6}]}
                 source={ImageView.edit}></Image>
             </TouchableOpacity>
           </View>
         </LinearGradient>
-        <View style={{ flex: 1, backgroundColor: Colors.white, padding: 10 }}>
+        <View style={{flex: 1, backgroundColor: Colors.white, padding: 10}}>
           <FlatList
             data={MenuList}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => (
+            renderItem={({item, index}) => (
               <TouchableOpacity
                 activeOpacity={0.9}
                 style={s.item}
                 onPress={() => {
                   if (item.name == 'Logout') {
-                    Alert.alert(
-                      'Logout',
-                      'Are you sure you want to Logout',
-                      [
-                        {
-                          text: 'Cancel',
-                          onPress: () => {
-                           
-                          },
-                          style: 'cancel',
-                        },
-                        { text: 'Yes', onPress: () => isLogout()},
-                      ]
-                    );
-
-                  }
-                  else if (item.name == "Delete Account") {
+                    Alert.alert('Logout', 'Are you sure you want to Logout', [
+                      {
+                        text: 'Cancel',
+                        onPress: () => {},
+                        style: 'cancel',
+                      },
+                      {text: 'Yes', onPress: () => isLogout()},
+                    ]);
+                  } else if (item.name == 'Delete Account') {
                     Alert.alert(
                       'Delete My Account',
                       'Are you sure you want to delete your account',
@@ -202,12 +189,10 @@ const DrawerMenuItem = ({ navigation }) => {
                           onPress: () => console.log('Cancel Pressed'),
                           style: 'cancel',
                         },
-                        { text: 'Yes', onPress: () => DeleteAccount() },
-                      ]
+                        {text: 'Yes', onPress: () => DeleteAccount()},
+                      ],
                     );
-
-                  }
-                  else {
+                  } else {
                     navigation.navigate(item.navigation);
                     navigation.closeDrawer();
                     setIndex(index);

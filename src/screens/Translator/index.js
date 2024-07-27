@@ -1,30 +1,27 @@
+import { InterstitialAd } from '@react-native-admob/admob';
+import Clipboard from '@react-native-community/clipboard';
 import React, { Component } from 'react';
-import { View, TextInput, StyleSheet, Text, Image, TouchableOpacity, Keyboard } from 'react-native';
-import { Languages } from '../../utils';
-import c from '../../styles/commonStyle';
+import { Image, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { connect } from 'react-redux';
 import {
-  AppRoot,
-  Header,
-  Snackbar,
-  Button,
-  RadioButton,
-  SheetPicker,
   Ad,
+  AppRoot,
+  Button,
+  Header,
+  SheetPicker
 } from '../../component';
 import {
   Colors,
-  Fonts,
-  Strings,
-  Screen,
-  Dimens,
-  ImageView,
   Constants,
+  Dimens,
+  Fonts,
+  ImageView,
+  Screen
 } from '../../config/appConstants';
+import c from '../../styles/commonStyle';
+import { Languages } from '../../utils';
 import { Google } from '../../utils/HttpService';
-import { connect } from 'react-redux';
-import { InterstitialAd, TestIds } from '@react-native-admob/admob';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import Clipboard from '@react-native-community/clipboard';
 const s = StyleSheet.create({
   picker: {
     width: '80%'

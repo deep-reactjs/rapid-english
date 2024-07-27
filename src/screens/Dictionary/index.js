@@ -1,21 +1,21 @@
+import { InterstitialAd } from '@react-native-admob/admob';
 import React, { Component } from 'react';
-import { AppRoot, Header, TextInput, SheetPicker, Ad, Snackbar, Loader } from '../../component';
-import c from '../../styles/commonStyle';
-import { connect } from 'react-redux';
-import {
-  Colors,
-  Screen,
-  ImageView,
-  Strings,
-  Fonts,
-  Dimens,
-  Constants,
-} from '../../config/appConstants';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { DictionaryApi } from '../../utils/HttpService';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import Sound from "react-native-sound";
-import { InterstitialAd, TestIds } from '@react-native-admob/admob';
+import { connect } from 'react-redux';
+import { Ad, AppRoot, Header, Loader, Snackbar, TextInput } from '../../component';
+import {
+  Colors,
+  Constants,
+  Dimens,
+  Fonts,
+  ImageView,
+  Screen,
+  Strings,
+} from '../../config/appConstants';
+import c from '../../styles/commonStyle';
+import { DictionaryApi } from '../../utils/HttpService';
 const s = StyleSheet.create({
   picker: {
     width: '40%',

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, {useEffect, useState} from 'react';
+import {Text} from 'react-native';
 import 'react-native-gesture-handler';
-import { Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import {
 //   Splash,
 //   Signin,
@@ -24,45 +24,43 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //   BlogView,
 //   Score
 // } from './Route';
-import Splash from "../screens/splash";
-import Signin from "../screens/Auth/signIn";
-import FPassword from "../screens/Auth/fPassword";
-import Signup from "../screens/Auth/signUp";
-import OtpVerify from "../screens/Auth/otpVerify";
-import Maintenance from "../screens/Auth/maintenance";
-import ForgotPassword from "../screens/Setting/forgotPassword";
-import Notification from "../screens/Notification";
-import Home from "../screens/Home";
-import Translator from "../screens/Translator";
-import Dictionary from "../screens/Dictionary";
-import Quiz from "../screens/Quiz";
-import Blog from "../screens/Blog";
-import BlogView from "../screens/Blog/BlogView";
-import About from "../screens/Setting/aboutUs";
-import Policy from "../screens/Setting/policy";
-import ContactUs from "../screens/Setting/contactUs";
-import Profile from "../screens/Account";
-import Score from "../screens/Account/score";
-import EditProfile from "../screens/Account/EditProfile";
-import Drawer from './DrawerMenu/DrawerMenu';
-import { Provider } from 'react-redux';
-import {PrefManager} from '../utils';
-import { AppOpenAdProvider, TestIds } from '@react-native-admob/admob';
+import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
+import {Provider} from 'react-redux';
+import {Storage_Key} from '../config/appConstants';
 import configureStore from '../redux/configureStore';
-import { Storage_Key } from "../config/appConstants";
-import Messages from "../screens/Messages/Message";
-import Faq from "../screens/Faq/Faq";
-import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
+import Profile from '../screens/Account';
+import EditProfile from '../screens/Account/EditProfile';
+import Score from '../screens/Account/score';
+import FPassword from '../screens/Auth/fPassword';
+import Maintenance from '../screens/Auth/maintenance';
+import OtpVerify from '../screens/Auth/otpVerify';
+import Signin from '../screens/Auth/signIn';
+import Signup from '../screens/Auth/signUp';
+import Blog from '../screens/Blog';
+import BlogView from '../screens/Blog/BlogView';
+import Dictionary from '../screens/Dictionary';
+import Faq from '../screens/Faq/Faq';
+import Messages from '../screens/Messages/Message';
+import Notification from '../screens/Notification';
+import Quiz from '../screens/Quiz';
+import About from '../screens/Setting/aboutUs';
+import ContactUs from '../screens/Setting/contactUs';
+import ForgotPassword from '../screens/Setting/forgotPassword';
+import Policy from '../screens/Setting/policy';
+import Splash from '../screens/splash';
+import Translator from '../screens/Translator';
+import {PrefManager} from '../utils';
+import Drawer from './DrawerMenu/DrawerMenu';
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
 const Stack = createNativeStackNavigator();
 const Store = configureStore();
 const AuthNavigator = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{headerShown: false}}>
     <Stack.Screen
       name="Splash"
       component={Splash}
-      navigationOptions={{ headerShown: false, header: false }}
+      navigationOptions={{headerShown: false, header: false}}
     />
     <Stack.Screen name={'Maintenance'} component={Maintenance} />
     <Stack.Screen name={'Signin'} component={Signin} />
@@ -73,67 +71,67 @@ const AuthNavigator = () => (
     <Stack.Screen
       name={'Home'}
       component={Drawer}
-      navigationOptions={{ headerShown: false, header: false }}
+      navigationOptions={{headerShown: false, header: false}}
     />
     <Stack.Screen
       name={'Translator'}
       component={Translator}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'Dictionary'}
       component={Dictionary}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'Quiz'}
       component={Quiz}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'Messages'}
       component={Messages}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
-     <Stack.Screen
+    <Stack.Screen
       name={'Faq'}
       component={Faq}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'Blog'}
       component={Blog}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'BlogView'}
       component={BlogView}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'ContactUs'}
       component={ContactUs}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'About'}
       component={About}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen
       name={'Policy'}
       component={Policy}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
     <Stack.Screen name={'ForgotPassword'} component={ForgotPassword} />
     <Stack.Screen name={'Notification'} component={Notification} />
@@ -142,8 +140,8 @@ const AuthNavigator = () => (
     <Stack.Screen
       name={'Score'}
       component={Score}
-      navigationOptions={{ headerShown: false, header: false }}
-      options={{ animation: 'slide_from_bottom' }}
+      navigationOptions={{headerShown: false, header: false}}
+      options={{animation: 'slide_from_bottom'}}
     />
   </Stack.Navigator>
 );
@@ -152,7 +150,7 @@ const App = () => {
     const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
     return result;
   };
-  
+
   const checkNotificationPermission = async () => {
     const result = await check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
     return result;
@@ -160,23 +158,22 @@ const App = () => {
   const requestPermission = async () => {
     const checkPermission = await checkNotificationPermission();
     if (checkPermission !== RESULTS.GRANTED) {
-     const request = await requestNotificationPermission();
-       if(request !== RESULTS.GRANTED){
-       console.log('notifications rejected')
-        }
+      const request = await requestNotificationPermission();
+      if (request !== RESULTS.GRANTED) {
+        console.log('notifications rejected');
+      }
     }
   };
   const [id, setId] = useState('');
   useEffect(() => {
-    requestPermission()
-  }, [])
+    requestPermission();
+  }, []);
   useEffect(() => {
-    PrefManager.getValue(Storage_Key.id).then(id=>{
-      setId(id)
-    })
+    PrefManager.getValue(Storage_Key.id).then(id => {
+      setId(id);
+    });
   }, [id]);
- 
-  
+
   return (
     <NavigationContainer>
       <Provider store={Store}>
@@ -184,10 +181,10 @@ const App = () => {
           unitId={TestIds.APP_OPEN}
           options={{ showOnColdStart: id?true:false,showOnAppForeground : id?true:false }}
         > */}
-          <AuthNavigator />
+        <AuthNavigator />
         {/* </AppOpenAdProvider> */}
       </Provider>
     </NavigationContainer>
-  )
-}
+  );
+};
 export default App;

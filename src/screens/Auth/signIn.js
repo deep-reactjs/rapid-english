@@ -1,40 +1,43 @@
 import React, {Component} from 'react';
-import c from '../../styles/commonStyle';
-import {Home} from '../../navigation/NavigationHelper';
 import {
-  View,
-  StyleSheet,
   Image,
-  TouchableOpacity,
-  Text,
   Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import {AccessToken, LoginManager} from 'react-native-fbsdk';
 import {
   AppRoot,
-  TextInput,
   Button,
   ScrollableAvoidKeyboard,
   Snackbar,
+  TextInput,
 } from '../../component';
 import {
-  Strings,
   Colors,
-  ImageView,
-  Fonts,
-  Screen,
-  Dimens,
-  Storage_Key,
   Constants,
+  Dimens,
+  Fonts,
+  ImageView,
+  Screen,
+  Storage_Key,
+  Strings,
 } from '../../config/appConstants';
-import {Helper, HttpService, PrefManager} from '../../utils';
+import {Home} from '../../navigation/NavigationHelper';
+import c from '../../styles/commonStyle';
+import {Helper, PrefManager} from '../../utils';
 import {Facebook} from '../../utils/HttpService';
-import FBSDK, {LoginManager, AccessToken} from 'react-native-fbsdk';
 // import { GoogleSignin } from '@react-native-community/google-signin';
+import appleAuth, {
+  AppleButton,
+} from '@invertase/react-native-apple-authentication';
+import messaging from '@react-native-firebase/messaging';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {signIn, SignInClear} from '../../redux/actions/authActions';
-import messaging from '@react-native-firebase/messaging';
-import Icon from 'react-native-vector-icons/FontAwesome';
 const s = StyleSheet.create({
   logoStyle: {
     height: Screen.hp(26),
@@ -136,6 +139,34 @@ class Signin extends Component {
         console.log(e);
       });
   };
+  onAppleButtonPress = async () => {
+    try {
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      });
+      const credentialState = await appleAuth.getCredentialStateForUser(
+        appleAuthRequestResponse.user,
+      );
+      if (!appleAuthRequestResponse?.email) {
+        Snackbar(Strings.appleAuthError, Strings.close);
+      }
+      if (credentialState && appleAuthRequestResponse?.email) {
+        this.socialLogin(
+          {
+            email: appleAuthRequestResponse?.email,
+            name: `${appleAuthRequestResponse?.fullName?.givenName || ''} ${
+              appleAuthRequestResponse?.fullName?.familyName || ''
+            }`,
+            profile: '',
+          },
+          2,
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   GL = async () => {
     try {
@@ -236,10 +267,11 @@ class Signin extends Component {
               onPress={() => this.login()}
             />
 
-            <Text style={[c.textBold, {alignSelf: 'center'}]}>{'or'}</Text>
-            {(
-              Platform.OS == 'ios' ? this.state.app1 == 0 : this.state.app != 0
-            ) ? (
+            {Platform.OS === 'android' ? (
+              <Text style={[c.textBold, {alignSelf: 'center'}]}>{'or'}</Text>
+            ) : null}
+
+            {(Platform.OS == 'ios' ? this.state.app1 : this.state.app !== 0) ? (
               <View
                 style={{
                   // flexDirection: 'row',
@@ -283,13 +315,13 @@ class Signin extends Component {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    // justifyContent: 'center',
+                    justifyContent: 'center',
                     backgroundColor: '#e44133',
                     borderRadius: 10,
                     width: '100%',
                     paddingVertical: 12,
                     paddingHorizontal: 16,
-                    marginTop: 12
+                    marginTop: 12,
                   }}
                   onPress={() => this.GL()}>
                   {/* <Image
@@ -297,16 +329,40 @@ class Signin extends Component {
                     style={{height: 40, width: 40}}
                     resizeMode="center"
                   /> */}
-                     <Icon name="google" size={24} color={Colors.white} />
+                  <Icon
+                    name="google"
+                    size={Platform.OS === 'ios' ? 12 : 24}
+                    color={Colors.white}
+                  />
                   <Text
-                  style={{
-                    fontFamily: Fonts.SemiBold,
-                    fontSize: Dimens.F16,
-                    color: Colors.white,
-                    paddingLeft: 22
-                  }}>
-                    Continue with Google</Text>
+                    style={{
+                      fontFamily: Fonts.SemiBold,
+                      fontSize: Dimens.F16,
+                      color: Colors.white,
+                      paddingLeft: Platform.OS === 'ios' ? 5 : 22,
+                    }}>
+                    Continue with Google
+                  </Text>
                 </TouchableOpacity>
+              </View>
+            ) : null}
+            {Platform.OS === 'ios' && appleAuth.isSupported ? (
+              <View
+                style={{
+                  width: '60%',
+                  alignSelf: 'center',
+                  marginTop: 16,
+                }}>
+                <AppleButton
+                  buttonStyle={AppleButton.Style.BLACK}
+                  buttonType={AppleButton.Type.SIGN_IN}
+                  style={{
+                    width: '100%',
+                    height: 45,
+                  }}
+                  textStyle={{paddingLeft: 22}}
+                  onPress={() => this.onAppleButtonPress()}
+                />
               </View>
             ) : null}
             <View
@@ -342,7 +398,6 @@ class Signin extends Component {
   login = async () => {
     const {email, password} = this.state;
     const token = await messaging()?.getToken();
-    console.log({token})
     if (!email) {
       Snackbar(Strings.eEmail, Strings.close);
       return;
@@ -401,7 +456,6 @@ class Signin extends Component {
       social: 1,
       token: token,
     };
-    console.log('request', request);
     this.props.signIn(request);
   };
 }

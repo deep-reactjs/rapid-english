@@ -1,25 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
-import {Ad, AppRoot, Header} from '../../component';
+import { InterstitialAd } from '@react-native-admob/admob';
+import React, { useEffect } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {
-  ScrollView,
-  TouchableNativeFeedback,
+  ScrollView
 } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
+import { Ad, AppRoot, Header } from '../../component';
 import {
-  Screen,
+  Constants,
+  Dimens,
   Fonts,
   ImageView,
-  Dimens,
-  Constants,
-  Storage_Key,
+  Screen
 } from '../../config/appConstants';
-import {connect} from 'react-redux';
-import {FCMService} from '../Notification/FCMService';
-import {localNotificationService} from '../Notification//NotificationService';
-import {InterstitialAd, TestIds} from '@react-native-admob/admob';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PrefManager } from '../../utils';
+import { localNotificationService } from '../Notification//NotificationService';
 const s = StyleSheet.create({
   box: {
     flexDirection: 'row',
@@ -135,7 +130,7 @@ const Home = ({navigation}) => {
         <Animatable.View style={{flex: 1}} animation="pulse" duration={1000}>
           <View style={{flex: 1, padding: 10, marginTop: -Screen.hp(1)}}>
             <View style={s.box}>
-              <TouchableNativeFeedback
+              <TouchableOpacity
                 style={s.innerbox}
                 onPress={() => {
                   entry.pulse(500).then(endState => {
@@ -159,9 +154,9 @@ const Home = ({navigation}) => {
                     <Text style={s.boxtxt}>Translator</Text>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
 
-              <TouchableNativeFeedback
+              <TouchableOpacity
                 style={[s.innerbox, {marginLeft: 0}]}
                 onPress={() => {
                   order
@@ -190,11 +185,11 @@ const Home = ({navigation}) => {
                     <Text style={s.boxtxt}>Dictionary</Text>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
             </View>
 
             <View style={s.box}>
-              <TouchableNativeFeedback
+              <TouchableOpacity
                 style={s.innerbox}
                 onPress={() => {
                   collection
@@ -225,8 +220,8 @@ const Home = ({navigation}) => {
                     </View>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
-              <TouchableNativeFeedback
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={s.innerbox}
                 onPress={() => {
                   report
@@ -259,10 +254,10 @@ const Home = ({navigation}) => {
                     </View>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
             </View>
             <View style={s.box}>
-              <TouchableNativeFeedback
+              <TouchableOpacity
                 style={[s.innerbox, {marginLeft: 0}]}
                 onPress={() => {
                   stock
@@ -293,8 +288,8 @@ const Home = ({navigation}) => {
                     </View>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
-              <TouchableNativeFeedback
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={[s.innerbox, {marginLeft: 0}]}
                 onPress={() => {
                   stock
@@ -325,10 +320,10 @@ const Home = ({navigation}) => {
                     </View>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
             </View>
             <View style={s.box}>
-              <TouchableNativeFeedback
+              <TouchableOpacity
                 style={[s.innerbox, {marginLeft: 0}]}
                 onPress={() => {
                   stock
@@ -359,9 +354,9 @@ const Home = ({navigation}) => {
                     </View>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
 
-              <TouchableNativeFeedback
+              <TouchableOpacity
                 style={[s.innerbox, {marginLeft: 0}]}
                 onPress={() => {
                   party
@@ -392,7 +387,7 @@ const Home = ({navigation}) => {
                     </View>
                   </View>
                 </Animatable.View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
             </View>
             
           </View>

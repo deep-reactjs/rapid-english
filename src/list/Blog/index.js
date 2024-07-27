@@ -1,33 +1,27 @@
+import {
+  InterstitialAd
+} from '@react-native-admob/admob';
+import axios from 'axios';
+import moment from 'moment/moment';
 import React from 'react';
 import {
+  Image,
+  PermissionsAndroid,
+  Platform,
   StyleSheet,
   Text,
-  View,
-  Image,
   TouchableOpacity,
-  Platform,
-  ActivityIndicator,
-  Alert,
-  PermissionsAndroid,
+  View
 } from 'react-native';
-import c from '../../styles/commonStyle';
+import RNFetchBlob from 'rn-fetch-blob';
+import { Ad, Button, Snackbar } from '../../component';
 import {
   Colors,
-  ImageView,
-  Screen,
-  Fonts,
   Constants,
+  Fonts,
+  Screen
 } from '../../config/appConstants';
-import {Ad, Button, Snackbar} from '../../component';
-import RNFetchBlob from 'rn-fetch-blob';
-import axios from 'axios';
-import {
-  InterstitialAd,
-  RewardedAd,
-  RewardedInterstitialAd,
-  useRewardedAd,
-} from '@react-native-admob/admob';
-import moment from 'moment/moment';
+import c from '../../styles/commonStyle';
 const s = StyleSheet.create({
   iconBg: {
     height: 30,
@@ -186,6 +180,7 @@ export default class discountList extends React.Component {
             onPress={async() => {
             
                       try {
+                        if(Platform.OS == "android"){
                         const granted = await PermissionsAndroid?.requestMultiple(
                           [PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
                           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE],
@@ -213,6 +208,9 @@ export default class discountList extends React.Component {
                           } else {
                             Snackbar("Storage permission not allowed")
                           }
+                        }}else{
+                          this.setState({downloading: rowData?.id});
+                          this.handleDownloadFile(this.props.item?.pdf_auto, this.props.item?.id);
                         }
                       } catch (err) {
                         console.log({err});

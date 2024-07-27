@@ -1,8 +1,8 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {Colors} from '../../config/appConstants';
-import {Header} from '../../component';
+import { ScrollView, StyleSheet } from 'react-native';
+import { AppRoot, Header } from '../../component';
 import StyledAccordion from '../../component/Accordian';
+import { Colors } from '../../config/appConstants';
 
 const faqData = [
   {
@@ -84,7 +84,7 @@ const faqData = [
 ];
 const Faq = ({navigation}) => {
   return (
-    <View style={styles.container}>
+    <AppRoot>
       <Header
         text={'FAQ'}
         onBack={() => navigation.goBack()}
@@ -95,7 +95,7 @@ const Faq = ({navigation}) => {
           <StyledAccordion title={faq.title} content={faq.content} />
         ))}
       </ScrollView>
-    </View>
+    </AppRoot>
   );
 };
 

@@ -1,36 +1,36 @@
-import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {InterstitialAd} from '@react-native-admob/admob';
+import React, {Component} from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import Icon from 'react-native-vector-icons/Fontisto';
+import {connect} from 'react-redux';
 import {
   AppRoot,
-  Header,
-  TextInput,
-  ScrollableAvoidKeyboard,
   Button,
+  Header,
+  ScrollableAvoidKeyboard,
   Snackbar,
-  Loader,
+  TextInput,
 } from '../../component';
+import SwipeUpDownModal from '../../component/BottomSheet';
 import {
   Colors,
-  Fonts,
-  Strings,
-  Screen,
-  Dimens,
-  ImageView,
-  Storage_Key,
   Constants,
+  Dimens,
+  Fonts,
+  ImageView,
+  Screen,
+  Storage_Key,
+  Strings,
 } from '../../config/appConstants';
-import c from '../../styles/commonStyle';
-import Icon from 'react-native-vector-icons/Fontisto';
-import SwipeUpDownModal from '../../component/BottomSheet';
-import ImagePicker from 'react-native-image-crop-picker';
-import { Helper, PrefManager } from '../../utils';
-import { connect } from 'react-redux';
 import {
   accountActions,
+  accountDataClear,
   accountUpdateActions,
-  accountDataClear,AccountUpdateClear
+  AccountUpdateClear,
 } from '../../redux/actions/accountActions';
-import { InterstitialAd, TestIds } from '@react-native-admob/admob';
+import c from '../../styles/commonStyle';
+import {Helper, PrefManager} from '../../utils';
 const styles = StyleSheet.create({
   flexBox: {
     width: Screen.width,
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 10,
     shadowColor: Colors.blackColor,
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: {width: 0, height: 5},
     shadowOpacity: 0.3,
     shadowRadius: 2,
     elevation: 5,
@@ -84,23 +84,23 @@ class EditProfile extends Component {
       modalVisible: false,
       flag: false,
       flag1: false,
-      InterstitialAd: InterstitialAd.createAd(Constants.REWARDED)
+      InterstitialAd: InterstitialAd.createAd(Constants.REWARDED),
     };
     this.isName = React.createRef();
     this.isMobile = React.createRef();
     this.isEmail = React.createRef();
     props.navigation.addListener('focus', async () => {
       PrefManager.getValue(Storage_Key.id).then(id => {
-        props.accountActions({ id: id });
+        props.accountActions({id: id});
         this.setState({
           flag: false,
-          flag1: false
-        })
+          flag1: false,
+        });
       });
     });
     props.navigation.addListener('focus', async () => {
       try {
-          this.state.InterstitialAd.show()
+        this.state.InterstitialAd.show();
       } catch (error) {
         console.log('error', error);
       }
@@ -124,7 +124,11 @@ class EditProfile extends Component {
         flag: true,
       };
     }
-    if (Object.keys(props.editProfile).length !== 0 && props.editProfile.status && !state.flag1) {
+    if (
+      Object.keys(props.editProfile).length !== 0 &&
+      props.editProfile.status &&
+      !state.flag1
+    ) {
       return {
         flag1: true,
       };
@@ -132,14 +136,17 @@ class EditProfile extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { navigation, editProfile, AccountUpdateClear } = this.props;
-    console.log(editProfile,'editProfile');
+    const {navigation, editProfile, AccountUpdateClear} = this.props;
+    console.log(editProfile, 'editProfile');
     if (Object.keys(editProfile).length !== 0 && editProfile.status) {
       setTimeout(() => {
         PrefManager.setValue(Storage_Key.name, this.state.name);
         PrefManager.setValue(Storage_Key.phone, this.state.mobile);
         PrefManager.setValue(Storage_Key.email, this.state.email);
-        PrefManager.setValue(Storage_Key.profile,editProfile.file_url+  editProfile.data.profile);
+        PrefManager.setValue(
+          Storage_Key.profile,
+          editProfile.file_url + editProfile.data.profile,
+        );
         AccountUpdateClear();
         navigation.goBack();
       }, 80);
@@ -147,7 +154,7 @@ class EditProfile extends Component {
   }
 
   render() {
-    const { navigation, loading } = this.props;
+    const {navigation, loading} = this.props;
     const {
       base,
       profile,
@@ -161,26 +168,25 @@ class EditProfile extends Component {
     return (
       <AppRoot>
         <View style={c.flexStyle}>
-
           <Header
             text={'Edit Profile'}
             onBack={() => navigation.goBack()}
             onLogout={() => navigation.navigate('Signin')}
           />
           <ScrollableAvoidKeyboard
-            style={{ flex: 1 }}
+            style={{flex: 1}}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'handled'}>
             <View style={styles.flexBox}>
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
-                  this.setState({ modalVisible: !this.state.modalVisible });
+                  this.setState({modalVisible: !this.state.modalVisible});
                 }}
                 style={styles.profileButton}>
                 {base == null ? (
                   <Image
-                    source={profile ? { uri: profile } : ImageView.noImage}
+                    source={profile ? {uri: profile} : ImageView.noImage}
                     style={{
                       height: '100%',
                       width: '100%',
@@ -191,7 +197,7 @@ class EditProfile extends Component {
                   />
                 ) : (
                   <Image
-                    source={{ uri: 'data:image/png;base64,' + base }}
+                    source={{uri: 'data:image/png;base64,' + base}}
                     style={{
                       height: '100%',
                       width: '100%',
@@ -203,7 +209,7 @@ class EditProfile extends Component {
                 )}
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({ modalVisible: !this.state.modalVisible });
+                    this.setState({modalVisible: !this.state.modalVisible});
                   }}
                   style={styles.camStyles}>
                   <Icon name="camera" size={16} color={Colors.white} />
@@ -218,7 +224,7 @@ class EditProfile extends Component {
               title={Strings.email}
               placeholderTextColor={Colors.dark_gray}
               onChangeText={text =>
-                this.setState({ email: text, emailError: '' })
+                this.setState({email: text, emailError: ''})
               }
               keyboardType={'email-address'}
               placeholder={Strings.email}
@@ -233,7 +239,7 @@ class EditProfile extends Component {
               fontBold
               value={name}
               errorText={nameError}
-              onChangeText={text => this.setState({ name: text, nameError: '' })}
+              onChangeText={text => this.setState({name: text, nameError: ''})}
               title={Strings.name}
               placeholderTextColor={Colors.dark_gray}
               keyboardType={'default'}
@@ -252,7 +258,7 @@ class EditProfile extends Component {
               value={mobile}
               errorText={mobileError}
               onChangeText={text =>
-                this.setState({ mobile: text, mobileError: '' })
+                this.setState({mobile: text, mobileError: ''})
               }
               title={Strings.Phone}
               placeholderTextColor={Colors.dark_gray}
@@ -268,21 +274,21 @@ class EditProfile extends Component {
               }}
             />
 
-            <View style={{ height: 100 }} />
+            <View style={{height: 100}} />
           </ScrollableAvoidKeyboard>
           <Button
             text={'Update'}
             visible={loading}
-            containerStyle={[c.Button, { marginBottom: Screen.hp(2.5) }]}
+            containerStyle={[c.Button, {marginBottom: Screen.hp(2.5)}]}
             onPress={() => this.validation()}
           />
           <SwipeUpDownModal
             modalVisible={this.state.modalVisible}
             onRequestClose={() => {
-              this.setState({ modalVisible: false });
+              this.setState({modalVisible: false});
             }}
             ContentModal={
-              <View style={{ flex: 1 }}>
+              <View style={{flex: 1}}>
                 <View style={c.draggableIcon} />
                 <View
                   style={{
@@ -298,7 +304,7 @@ class EditProfile extends Component {
                     }}>
                     <Image
                       resizeMode={'contain'}
-                      style={{ height: 60, width: 60 }}
+                      style={{height: 60, width: 60}}
                       source={ImageView.camera}
                     />
                   </TouchableOpacity>
@@ -309,7 +315,7 @@ class EditProfile extends Component {
                     }}>
                     <Image
                       resizeMode={'contain'}
-                      style={{ height: 69, width: 60 }}
+                      style={{height: 69, width: 60}}
                       source={ImageView.gallery}
                     />
                   </TouchableOpacity>
@@ -318,7 +324,7 @@ class EditProfile extends Component {
             }
             ContentModalStyle={c.contentModalStyle}
             onClose={() => {
-              this.setState({ modalVisible: false });
+              this.setState({modalVisible: false});
             }}
           />
         </View>
@@ -326,7 +332,7 @@ class EditProfile extends Component {
     );
   }
   validation = async () => {
-    const { name, email, mobile, base } = this.state;
+    const {name, email, mobile, base} = this.state;
     if (!name) {
       Snackbar('Enter your Name', Strings.close);
       return;
@@ -360,7 +366,7 @@ class EditProfile extends Component {
   };
 
   camera() {
-    ImagePicker.openCamera({
+    ImageCropPicker.openCamera({
       multiple: false,
       includeBase64: true,
       includeExif: true,
@@ -389,7 +395,7 @@ class EditProfile extends Component {
   }
 
   gallary() {
-    ImagePicker.openPicker({
+    ImageCropPicker.openPicker({
       multiple: false,
       includeBase64: true,
       includeExif: true,

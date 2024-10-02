@@ -1,13 +1,13 @@
 import {Dimensions, Platform} from 'react-native';
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-const SCREEN_WIDTH = Dimensions.get('window').width;
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {
-  widthPercentageToDP,
   heightPercentageToDP,
   listenOrientationChange,
   removeOrientationListener,
+  widthPercentageToDP,
 } from 'react-native-responsive-screen';
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const Constants = {
   API_BASE_URL: 'https://rapid-english.com/api/',
@@ -15,8 +15,8 @@ const Constants = {
   GOOGLE_T_API_KEY: 'AIzaSyDYyMlsD5ZLNfmzLB-5yvEzuKhQcIr1nJ4',
   GOOGLE_SIGNIN_KEY_ANDROID:
     '310538639449-0j36mlu6iu2j7ngpr320lub25erergdh.apps.googleusercontent.com',
-    
-    GOOGLE_SIGNIN_KEY_IOS:
+
+  GOOGLE_SIGNIN_KEY_IOS:
     '310538639449-0j36mlu6iu2j7ngpr320lub25erergdh.apps.googleusercontent.com',
   SENTRY_INTERNAL_DSN: '',
   REQUEST_TIMEOUT: 20000 * 1,
@@ -27,15 +27,39 @@ const Constants = {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 80,
   },
-  // BANNER_KEY: Platform.OS == 'android' ?"ca-app-pub-9542796943771971/4018042184":'ca-app-pub-9542796943771971/4354636226',
-  // REWARDED:  Platform.OS == 'android' ?'ca-app-pub-9542796943771971/5327927186':'ca-app-pub-9542796943771971/4660561397',
-  // REWARDED_INTERSTITIAL: Platform.OS === 'android' ? "ca-app-pub-9542796943771971/5327927186" : "ca-app-pub-9542796943771971/4660561397",
-  // INTERSTITIAL__KEY: Platform.OS == 'android' ?"ca-app-pub-9542796943771971/6006783416":'ca-app-pub-9542796943771971/4602596976'
+  // BANNER_KEY:
+  //   Platform.OS == 'android'
+  //     ? 'ca-app-pub-9542796943771971/4018042184'
+  //     : 'ca-app-pub-9542796943771971/4354636226',
+  // REWARDED:
+  //   Platform.OS == 'android'
+  //     ? 'ca-app-pub-9542796943771971/5327927186'
+  //     : 'ca-app-pub-9542796943771971/4660561397',
+  // REWARDED_INTERSTITIAL:
+  //   Platform.OS === 'android'
+  //     ? 'ca-app-pub-9542796943771971/5327927186'
+  //     : 'ca-app-pub-9542796943771971/4660561397',
+  // INTERSTITIAL__KEY:
+  //   Platform.OS == 'android'
+  //     ? 'ca-app-pub-9542796943771971/6006783416'
+  //     : 'ca-app-pub-9542796943771971/4602596976',
 
-  BANNER_KEY: "ca-app-pub-3940256099942544/9214589741" || Platform.OS == 'android' ?"ca-app-pub-9542796943771971/4018042184":'ca-app-pub-9542796943771971/4354636226',
-  REWARDED: "ca-app-pub-3940256099942544/5224354917" || Platform.OS == 'android' ?'ca-app-pub-9542796943771971/5327927186':'ca-app-pub-9542796943771971/4660561397',
-  REWARDED_INTERSTITIAL: Platform.OS === 'android' ? "ca-app-pub-9542796943771971/5327927186" : "ca-app-pub-9542796943771971/4660561397",
-  INTERSTITIAL__KEY: "ca-app-pub-3940256099942544/1033173712" || Platform.OS == 'android' ?"ca-app-pub-9542796943771971/6006783416":'ca-app-pub-9542796943771971/4602596976'
+  BANNER_KEY:
+    'ca-app-pub-3940256099942544/9214589741' || Platform.OS == 'android'
+      ? 'ca-app-pub-9542796943771971/4018042184'
+      : 'ca-app-pub-9542796943771971/4354636226',
+  REWARDED:
+    'ca-app-pub-3940256099942544/5224354917' || Platform.OS == 'android'
+      ? 'ca-app-pub-9542796943771971/5327927186'
+      : 'ca-app-pub-9542796943771971/4660561397',
+  REWARDED_INTERSTITIAL:
+    Platform.OS === 'android'
+      ? 'ca-app-pub-9542796943771971/5327927186'
+      : 'ca-app-pub-9542796943771971/4660561397',
+  INTERSTITIAL__KEY:
+    'ca-app-pub-3940256099942544/1033173712' || Platform.OS == 'android'
+      ? 'ca-app-pub-9542796943771971/6006783416'
+      : 'ca-app-pub-9542796943771971/4602596976',
 };
 
 const Colors = {
@@ -140,7 +164,7 @@ const ImageView = {
   youtube: require('../assets/youtube.png'),
   gmail: require('../assets/gmail.png'),
   password: require('../assets/password.png'),
-  download: require('../assets/download.png')
+  download: require('../assets/download.png'),
 };
 const Strings = {
   App_Title: 'Rapid',
@@ -191,7 +215,8 @@ const Strings = {
   tw: 'Twitter',
   yt: 'YouTube',
   tele: 'Telegram',
-  otpMessage: "We have sent the code to the registered Email. If you don't receive an OTP from us within this time frame, please make sure that you check your spam folder.",
+  otpMessage:
+    "We have sent the code to the registered Email. If you don't receive an OTP from us within this time frame, please make sure that you check your spam folder.",
   codeExp: 'Code expire in',
   verify: 'Verify OTP',
   wrongOtp: 'Wrong OTP. Please Retry!',
@@ -206,14 +231,14 @@ const Strings = {
   newpcf: 'New Password must contain the following:',
   ll: 'Lowercase letter',
   cl: 'Capital (uppercase) letter',
-  num:'Number',
-  mc:' Minimum 8 characters',
-  correct:"correct.wav",
-  score:"score.wav",
-  score2:"score2.mp3",
-  wrong:"wrong.wav",
-  synonyms:'Synonyms',
-  antonyms:'Antonyms'
+  num: 'Number',
+  mc: ' Minimum 8 characters',
+  correct: 'correct.wav',
+  score: 'score.wav',
+  score2: 'score2.mp3',
+  wrong: 'wrong.wav',
+  synonyms: 'Synonyms',
+  antonyms: 'Antonyms',
 };
 
 const Storage_Key = {
@@ -227,12 +252,12 @@ const Storage_Key = {
   app1: '@app1',
 };
 export {
-  Constants,
   Colors,
+  Constants,
   Dimens,
-  Screen,
   Fonts,
   ImageView,
-  Strings,
+  Screen,
   Storage_Key,
+  Strings,
 };

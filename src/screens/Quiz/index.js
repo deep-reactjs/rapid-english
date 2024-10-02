@@ -1,48 +1,48 @@
+import {InterstitialAd} from '@react-native-admob/admob';
 import React, {Component} from 'react';
 import {
-  AppRoot,
-  Separator,
-  ProgressBar,
-  Ad,
-  Header,
-  Loader,
-  Button,
-} from '../../component';
-import c from '../../styles/commonStyle';
-import {
-  Screen,
-  Colors,
-  ImageView,
-  Storage_Key,
-  Strings,
-  Fonts,
-  Dimens,
-  Constants,
-} from '../../config/appConstants';
-import {
-  StyleSheet,
+  Image,
+  Modal,
   ScrollView,
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  Image,
   Vibration,
-  Modal,
+  View,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {PrefManager} from '../../utils';
-import Sound from 'react-native-sound';
-import ConfettiCannon from 'react-native-confetti-cannon';
 import * as Animatable from 'react-native-animatable';
-import {InterstitialAd, TestIds} from '@react-native-admob/admob';
-import {quizActions, onQuizClear} from '../../redux/actions/quizActions';
+import ConfettiCannon from 'react-native-confetti-cannon';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
+import Sound from 'react-native-sound';
+import ViewShot from 'react-native-view-shot';
+import {connect} from 'react-redux';
+import {
+  Ad,
+  AppRoot,
+  Button,
+  Header,
+  Loader,
+  ProgressBar,
+  Separator,
+} from '../../component';
+import {
+  Colors,
+  Constants,
+  Dimens,
+  Fonts,
+  ImageView,
+  Screen,
+  Storage_Key,
+  Strings,
+} from '../../config/appConstants';
+import {onQuizClear, quizActions} from '../../redux/actions/quizActions';
 import {
   saveAnswerActions,
   saveAnswerClear,
 } from '../../redux/actions/saveAnswerActions';
-import ViewShot from 'react-native-view-shot';
-import RNFS from 'react-native-fs'
-import Share from 'react-native-share';
+import c from '../../styles/commonStyle';
+import {PrefManager} from '../../utils';
 const s = StyleSheet.create({
   viewRoot: {
     backgroundColor: Colors.shadow,
@@ -261,26 +261,27 @@ class Quiz extends Component {
     this.props.navigation.goBack();
   };
   captureAndShareScreenshot = () => {
-    this.setState({captureLoading: true})
+    this.setState({captureLoading: true});
     this.refs.viewShot.capture().then(uri => {
       RNFS.readFile(uri, 'base64').then(res => {
         let urlString = 'data:image/jpeg;base64,' + res;
         let options = {
           title: 'Share quiz result',
-          message: 'This is my quiz result from rapid english quiz. https://www.rapidenglish.com/',
+          message:
+            'This is my quiz result from rapid english quiz. Download the app: https://linktree.com/rapidenglish4u',
           url: urlString,
           type: 'image/jpeg',
         };
         Share.open(options)
           .then(res => {
-            this.setState({captureLoading: false})
+            this.setState({captureLoading: false});
             console.log(res);
           })
           .catch(err => {
-            this.setState({captureLoading: false})
+            this.setState({captureLoading: false});
             err && console.log(err);
           });
-          this.setState({captureLoading: false})
+        this.setState({captureLoading: false});
       });
     });
   };
@@ -297,7 +298,7 @@ class Quiz extends Component {
       total_right,
       answer,
       attemp,
-      captureLoading
+      captureLoading,
     } = this.state;
     return (
       <AppRoot>
@@ -330,7 +331,6 @@ class Quiz extends Component {
                 style={{flex: 1}}
                 ref="viewShot"
                 options={{format: 'jpg', quality: 0.9}}>
-              
                 <View
                   style={{
                     flex: 1,
@@ -338,26 +338,28 @@ class Quiz extends Component {
                     alignItems: 'center',
                     backgroundColor: Colors.secondary,
                   }}>
-                  {!this.state.captureLoading && <TouchableOpacity
-                    onPress={() => {
-                      try {
-                        this.state.InterstitialAd.show();
-                      } catch (error) {
-                        console.log('error', error);
-                      }
-                      this.setState({quizComplete: false});
-                      navigation.navigate('Home');
-                    }}
-                    style={{
-                      position: 'absolute',
-                      top: 36,
-                      right: Screen.wp(13),
-                    }}>
-                    <Image
-                      source={ImageView.close}
-                      style={{height: 20, width: 20, tintColor: Colors.white}}
-                    />
-                  </TouchableOpacity>}
+                  {!this.state.captureLoading && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        try {
+                          this.state.InterstitialAd.show();
+                        } catch (error) {
+                          console.log('error', error);
+                        }
+                        this.setState({quizComplete: false});
+                        navigation.navigate('Home');
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: 36,
+                        right: Screen.wp(13),
+                      }}>
+                      <Image
+                        source={ImageView.close}
+                        style={{height: 20, width: 20, tintColor: Colors.white}}
+                      />
+                    </TouchableOpacity>
+                  )}
                   <View
                     style={{
                       width: Screen.wp(80),
@@ -448,13 +450,13 @@ class Quiz extends Component {
                 </View>
               </ViewShot>
               <View>
-                  <Button
+                <Button
                   visible={this.state.captureLoading}
-                    // style={{paddingVertical}}
-                    text="Share"
-                    onPress={this.captureAndShareScreenshot}
-                  />
-                </View>
+                  // style={{paddingVertical}}
+                  text="Share"
+                  onPress={this.captureAndShareScreenshot}
+                />
+              </View>
             </AppRoot>
           </Modal>
         ) : (

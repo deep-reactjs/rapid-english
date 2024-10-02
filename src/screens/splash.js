@@ -1,29 +1,28 @@
+import {CommonActions} from '@react-navigation/native';
 import React, {Component} from 'react';
 import {
   Image,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-  Modal,
   Linking,
+  Modal,
   Platform,
-  DeviceInfo,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {Home, Login} from '../navigation/NavigationHelper';
+import {connect} from 'react-redux';
+import {AppRoot} from '../component';
 import {
+  Colors,
+  Dimens,
+  Fonts,
   ImageView,
   Screen,
   Storage_Key,
-  Colors,
-  Fonts,
-  Dimens,
 } from '../config/appConstants';
-import {AppRoot} from '../component';
-import {connect} from 'react-redux';
+import {Home, Login} from '../navigation/NavigationHelper';
 import {appVersion} from '../redux/actions/splashActions';
 import {PrefManager} from '../utils';
-import {CommonActions} from '@react-navigation/native';
 const styles = StyleSheet.create({
   imgStyle: {
     height: Screen.hp('28%'),
@@ -169,6 +168,8 @@ class Splash extends Component {
         flag: true,
         Appversion: false,
       };
+    } else {
+      return null;
     }
   }
 
